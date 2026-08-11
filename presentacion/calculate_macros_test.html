@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>FitPaisa · Plan de Pruebas Automatizado</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  color-scheme: dark;
+  --bg:#080a0f;--bg-card:#0f1219;--bg-glass:rgba(255,255,255,.03);
+  --border:rgba(255,255,255,.07);--border-ok:rgba(255,138,138,.35);
+  --border-fail:rgba(255,59,59,.35);--border-warn:rgba(255,179,71,.35);
+  --ok:#ff8a8a;--fail:#ff3b3b;--warn:#ffb347;--info:#c084fc;--purple:#c084fc;
+  --text:#f0f4f8;--text-muted:#6b7588;--text-dim:rgba(240,244,248,0.5);
+  --accent:#ff3b3b;--accent2:#e53434;
+  --glow-ok:rgba(255,138,138,.15);--glow-fail:rgba(255,59,59,.15);
+}
+html { scrollbar-width: thin; scrollbar-color: var(--r) var(--dk); }
+::-webkit-scrollbar { width: 8px; height: 8px; background: var(--dk); }
+::-webkit-scrollbar-track { background: var(--dk); }
+::-webkit-scrollbar-thumb { background: var(--r); border-radius: 4px; border: 2px solid var(--dk); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,59,59,0.8); }
+
+body{font-family:'Inter',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;line-height:1.6}
+
+/* Scrollbar */
+html { scrollbar-width: thin; scrollbar-color: var(--accent) var(--bg); }
+::-webkit-scrollbar { width: 8px; height: 8px; background: var(--bg); }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; border: 2px solid var(--bg); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent2); }
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(135deg,var(--bg-card) 0%,#1a0f12 50%,var(--bg-card) 100%);
+  border-bottom:1px solid var(--border);padding:2.5rem 2rem 2rem;
+  position:relative;overflow:hidden;
+}
+header::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 60% 80% at 20% 50%,rgba(255,59,59,.12) 0%,transparent 70%),
+             radial-gradient(ellipse 40% 60% at 80% 30%,rgba(255,138,138,.10) 0%,transparent 70%);
+}
+.header-inner{max-width:1000px;margin:0 auto;position:relative}
+.badge-row{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem}
+.badge{font-family:'JetBrains Mono',monospace;font-size:.68rem;font-weight:500;
+  padding:.2rem .7rem;border-radius:99px;border:1px solid;letter-spacing:.04em;text-transform:uppercase}
+.badge-php{color:var(--accent);border-color:rgba(255,59,59,.35);background:rgba(255,59,59,.08)}
+.badge-js{color:var(--warn);border-color:rgba(255,179,71,.35);background:rgba(255,179,71,.08)}
+.badge-v{color:var(--ok);border-color:rgba(255,138,138,.35);background:rgba(255,138,138,.08)}
+h1{font-size:clamp(1.6rem,4vw,2.4rem);font-weight:700;line-height:1.15;margin-bottom:.5rem;
+  background:linear-gradient(135deg,var(--text) 30%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.subtitle{font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-dim);margin-bottom:1.5rem}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem}
+.meta-card{background:var(--bg-glass);border:1px solid var(--border);border-radius:10px;padding:.75rem 1rem;backdrop-filter:blur(8px)}
+.meta-label{font-size:.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:.2rem}
+.meta-value{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--text)}
+
+/* ── CONTROLS ── */
+.controls{max-width:1000px;margin:2rem auto 0;padding:0 2rem;display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.65rem 1.4rem;border-radius:8px;
+  font-family:'Inter',sans-serif;font-size:.88rem;font-weight:600;cursor:pointer;
+  transition:all .2s;border:1px solid transparent}
+.btn-primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:var(--text);box-shadow:0 0 20px rgba(255,59,59,.3)}
+.btn-primary:hover{box-shadow:0 0 30px rgba(255,59,59,.5);transform:translateY(-1px)}
+.btn-ghost{background:var(--bg-glass);color:var(--text-dim);border-color:var(--border)}
+.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.15)}
+.run-status{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-muted);margin-left:auto}
+
+/* ── SCOREBOARD ── */
+.scoreboard{max-width:1000px;margin:1.5rem auto 0;padding:0 2rem;display:none}
+.scoreboard.visible{display:block}
+.score-bar{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;
+  padding:1.25rem 1.5rem;display:flex;align-items:center;gap:2rem;flex-wrap:wrap}
+.score-num{font-family:'JetBrains Mono',monospace;font-size:2rem;font-weight:700;line-height:1}
+.score-num.ok{color:var(--ok);text-shadow:0 0 20px rgba(255,138,138,.4)}
+.score-num.fail{color:var(--fail);text-shadow:0 0 20px rgba(255,59,59,.4)}
+.score-label{font-size:.75rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.progress-track{flex:1;min-width:200px;height:6px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--ok),#ffbaba);transition:width .6s cubic-bezier(.4,0,.2,1)}
+.verdict{font-size:.9rem;font-weight:600;padding:.4rem 1rem;border-radius:8px}
+.verdict.pass{background:var(--glow-ok);color:var(--ok);border:1px solid var(--border-ok)}
+.verdict.fail{background:var(--glow-fail);color:var(--fail);border:1px solid var(--border-fail)}
+
+/* ── LIVE CALCULATOR ── */
+.live-calc{max-width:1000px;margin:2rem auto 0;padding:0 2rem}
+.live-panel{
+  background:linear-gradient(135deg,var(--bg-card) 0%,#160b0d 100%);
+  border:1px solid rgba(255,59,59,.3);border-radius:16px;overflow:hidden;
+  box-shadow:0 0 40px rgba(255,59,59,.08);
+}
+.live-header{
+  padding:1.1rem 1.5rem;display:flex;align-items:center;gap:1rem;
+  border-bottom:1px solid var(--border);background:rgba(255,59,59,.06);flex-wrap:wrap;
+}
+.live-title{font-size:.9rem;font-weight:700;color:var(--accent);flex:1}
+.preset-label{font-size:.68rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em}
+.preset-row{display:flex;gap:.4rem;flex-wrap:wrap}
+.preset-btn{
+  font-family:'JetBrains Mono',monospace;font-size:.72rem;font-weight:600;
+  padding:.28rem .65rem;border-radius:6px;border:1px solid rgba(255,59,59,.35);
+  background:rgba(255,59,59,.1);color:var(--text);cursor:pointer;transition:all .15s;
+}
+.preset-btn:hover{background:rgba(255,59,59,.25);border-color:rgba(255,59,59,.6)}
+.preset-btn.active{background:rgba(255,59,59,.35);border-color:var(--accent);color:var(--text)}
+.preset-btn.ce{border-color:rgba(255,179,71,.35);background:rgba(255,179,71,.08);color:var(--warn)}
+.preset-btn.ce:hover{background:rgba(255,179,71,.18)}
+.live-body{display:grid;grid-template-columns:1fr 1fr;gap:0}
+.live-inputs{padding:1.5rem;border-right:1px solid var(--border);display:flex;flex-direction:column;gap:1rem}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+.field{display:flex;flex-direction:column;gap:.3rem}
+.field label{font-size:.68rem;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted)}
+.field input,.field select{
+  background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:8px;
+  padding:.55rem .85rem;font-family:'JetBrains Mono',monospace;font-size:.88rem;
+  color:var(--text);width:100%;transition:border-color .2s,box-shadow .2s;outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(255,59,59,.12)}
+.field input.invalid{border-color:var(--border-fail);box-shadow:0 0 0 3px rgba(255,59,59,.1)}
+.field select option{background:var(--bg-card)}
+.live-output{padding:1.5rem;display:flex;flex-direction:column;gap:1rem;min-height:340px}
+.output-empty{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  color:var(--text-muted);font-size:.82rem;text-align:center;opacity:.5;
+}
+.kcal-display{text-align:center;padding:1rem;background:var(--bg-glass);border:1px solid var(--border);border-radius:12px}
+.kcal-big{
+  font-family:'JetBrains Mono',monospace;font-size:2.8rem;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),#ff8a8a);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;
+}
+.kcal-label{font-size:.72rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-top:.3rem}
+.kcal-note{font-size:.72rem;margin-top:.4rem;padding:.25rem .6rem;border-radius:6px;display:inline-block}
+.kcal-note.limited{background:rgba(255,179,71,.12);color:var(--warn);border:1px solid var(--border-warn)}
+.kcal-note.adj-pos{background:rgba(255,138,138,.1);color:var(--ok);border:1px solid var(--border-ok)}
+.kcal-note.adj-neg{background:rgba(255,59,59,.1);color:var(--fail);border:1px solid var(--border-fail)}
+.kcal-note.neutral{background:var(--bg-glass);color:var(--text-muted);border:1px solid var(--border)}
+.sec-label{font-size:.65rem;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--text-muted);margin-bottom:.3rem}
+.macro-bars{display:flex;flex-direction:column;gap:.6rem}
+.macro-row{display:flex;align-items:center;gap:.75rem}
+.macro-name{font-size:.72rem;font-weight:600;color:var(--text-dim);width:4rem;flex-shrink:0}
+.macro-track{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:99px;overflow:hidden}
+.macro-fill{height:100%;border-radius:99px;transition:width .5s cubic-bezier(.4,0,.2,1)}
+.macro-fill.prot{background:linear-gradient(90deg,var(--accent),#ff8a8a)}
+.macro-fill.carb{background:linear-gradient(90deg,var(--warn),#ffd180)}
+.macro-fill.fat{background:linear-gradient(90deg,var(--info),#e0b0ff)}
+.macro-val{font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:600;color:var(--text);width:3.5rem;text-align:right;flex-shrink:0}
+.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:.4rem}
+.mini-cell{background:var(--bg-glass);border:1px solid var(--border);border-radius:8px;padding:.4rem .7rem}
+.mini-key{font-size:.62rem;color:var(--text-muted)}
+.mini-val{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:600;color:var(--text)}
+.step-box{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:.85rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;
+  line-height:1.85;color:var(--text-dim);
+}
+.step-box b{color:var(--accent)}
+.step-box em{color:var(--ok);font-style:normal}
+.warn-box{
+  padding:.6rem .9rem;border-radius:8px;background:rgba(255,179,71,.08);
+  border:1px solid var(--border-warn);font-size:.8rem;color:var(--warn);
+}
+
+/* ── MAIN SECTIONS ── */
+.main{max-width:1000px;margin:2rem auto 4rem;padding:0 2rem;display:flex;flex-direction:column;gap:2rem}
+.sec-title{
+  font-size:.72rem;font-weight:600;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--text-muted);display:flex;align-items:center;gap:.75rem;margin-bottom:1rem;
+}
+.sec-title::after{content:'';flex:1;height:1px;background:var(--border)}
+.sec-title span{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:1.6rem;height:1.6rem;border-radius:6px;font-size:.7rem;
+  background:var(--bg-glass);border:1px solid var(--border);color:var(--info);
+}
+
+/* ── TEST CARDS ── */
+.test-list{display:flex;flex-direction:column;gap:.5rem}
+.test-card{border-radius:10px;border:1px solid var(--border);background:var(--bg-card);overflow:hidden;transition:border-color .2s,box-shadow .2s}
+.test-card.ok{border-color:var(--border-ok)}
+.test-card.fail{border-color:var(--border-fail);box-shadow:0 0 16px var(--glow-fail)}
+.test-card.warn{border-color:var(--border-warn)}
+.test-header{display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;cursor:pointer;user-select:none}
+.t-indicator{width:2rem;height:2rem;border-radius:6px;display:flex;align-items:center;
+  justify-content:center;font-size:.75rem;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0}
+.ok  .t-indicator{background:rgba(255,138,138,.15);color:var(--ok)}
+.fail .t-indicator{background:rgba(255,59,59,.15);color:var(--fail)}
+.warn .t-indicator{background:rgba(255,179,71,.15);color:var(--warn)}
+.t-id{font-family:'JetBrains Mono',monospace;font-size:.75rem;font-weight:700;
+  padding:.15rem .5rem;border-radius:5px;background:rgba(255,59,59,.12);color:var(--accent);flex-shrink:0}
+.t-label{font-size:.88rem;font-weight:500;color:var(--text);flex:1}
+.t-path{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted);flex-shrink:0}
+.chevron{width:1rem;height:1rem;color:var(--text-muted);transition:transform .2s;flex-shrink:0}
+.test-card.expanded .chevron{transform:rotate(90deg)}
+.test-body{display:none;padding:0 1rem 1rem;border-top:1px solid var(--border)}
+.test-card.expanded .test-body{display:block}
+.d-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:.5rem;margin-top:.75rem}
+.d-cell{background:var(--bg-glass);border:1px solid var(--border);border-radius:8px;padding:.5rem .75rem}
+.d-key{font-size:.65rem;color:var(--text-muted);margin-bottom:.15rem}
+.d-val{font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:600;color:var(--text)}
+.d-exp{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-muted)}
+.d-cell.mismatch{border-color:var(--border-fail);background:var(--glow-fail)}
+.d-cell.mismatch .d-val{color:var(--fail)}
+
+/* ── INFO BOX ── */
+.info-box{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:1.5rem}
+.info-box h3{font-size:.85rem;font-weight:600;color:var(--info);margin-bottom:.75rem}
+.f-row{display:flex;flex-direction:column;gap:.4rem}
+.f-line{font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text-dim);
+  padding:.3rem .75rem;border-left:2px solid var(--border)}
+.f-line strong{color:var(--accent)}
+
+/* ── CODE ── */
+.code-block{
+  background:var(--bg);border:1px solid var(--border);border-radius:10px;
+  padding:1.25rem 1.5rem;font-family:'JetBrains Mono',monospace;font-size:.8rem;
+  line-height:1.7;overflow-x:auto;white-space:pre;
+}
+.kw{color:#c792ea}.fn{color:#82aaff}.str{color:#c3e88d}.num{color:#f78c6c}
+.cmt{color:#546e7a;font-style:italic}.var{color:#ffcb6b}
+
+/* ── FOOTER ── */
+footer{text-align:center;padding:2rem;font-size:.75rem;color:var(--text-muted);border-top:1px solid var(--border)}
+footer a{color:var(--accent);text-decoration:none}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+.test-card{animation:fadeIn .25s ease both}
+
+@media(max-width:700px){
+  .live-body{grid-template-columns:1fr}
+  .live-inputs{border-right:none;border-bottom:1px solid var(--border)}
+  .t-path{display:none}
+  .score-bar{gap:1rem}
+  .meta-grid{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="header-inner">
+    <div class="badge-row">
+      <span class="badge badge-php">PHP → JS</span>
+      <span class="badge badge-js">Browser Native</span>
+      <span class="badge badge-v">V(G) = 4</span>
+    </div>
+    <h1>Plan de Pruebas Automatizado</h1>
+    <p class="subtitle">FitPaisa · calculate_macros() · api/nutrition.php · 2 junio 2026</p>
+    <div class="meta-grid">
+      <div class="meta-card"><div class="meta-label">Función</div><div class="meta-value">calculate_macros</div></div>
+      <div class="meta-card"><div class="meta-label">Metodología</div><div class="meta-value">Caja Negra + Blanca</div></div>
+      <div class="meta-card"><div class="meta-label">Complejidad V(G)</div><div class="meta-value">4</div></div>
+      <div class="meta-card"><div class="meta-label">Autor</div><div class="meta-value">JAGV · 2026</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- CONTROLS -->
+<div class="controls">
+  <button class="btn btn-primary" onclick="runAll()">
+    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+    Ejecutar todas las pruebas
+  </button>
+  <button class="btn btn-ghost" onclick="expandAll()">Expandir todo</button>
+  <button class="btn btn-ghost" onclick="collapseAll()">Colapsar todo</button>
+  <span class="run-status" id="runStatus">Listo para ejecutar</span>
+</div>
+
+<!-- SCOREBOARD -->
+<div class="scoreboard" id="scoreboard">
+  <div class="score-bar">
+    <div><div class="score-num ok" id="scoreOk">0</div><div class="score-label">Pasadas</div></div>
+    <div><div class="score-num fail" id="scoreFail">0</div><div class="score-label">Fallidas</div></div>
+    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
+    <div class="score-num" id="scoreTotal" style="color:var(--text-dim)">0</div>
+    <div class="score-label">Total</div>
+    <div class="verdict" id="verdictBadge"></div>
+  </div>
+</div>
+
+<!-- CALCULADORA EN VIVO -->
+<div class="live-calc">
+  <div class="live-panel">
+    <div class="live-header">
+      <span class="live-title">🧮 Calculadora en Vivo · Demostración Manual</span>
+      <span class="preset-label">Presets del plan:</span>
+      <div class="preset-row">
+        <button class="preset-btn" id="pb-CN01" onclick="loadPreset('CN01')">CN01</button>
+        <button class="preset-btn" id="pb-CN02" onclick="loadPreset('CN02')">CN02</button>
+        <button class="preset-btn" id="pb-CN03" onclick="loadPreset('CN03')">CN03</button>
+        <button class="preset-btn" id="pb-CN04" onclick="loadPreset('CN04')">CN04</button>
+        <button class="preset-btn" id="pb-CB01" onclick="loadPreset('CB01')">CB01 · mín</button>
+        <button class="preset-btn" id="pb-CB05" onclick="loadPreset('CB05')">CB05 · máx</button>
+        <button class="preset-btn ce" id="pb-CE01" onclick="loadPreset('CE01')">CE01 ⚠</button>
+        <button class="preset-btn ce" id="pb-CE02" onclick="loadPreset('CE02')">CE02 ⚠</button>
+        <button class="preset-btn" onclick="clearCalc()">✕ Limpiar</button>
+      </div>
+    </div>
+    <div class="live-body">
+      <!-- INPUTS -->
+      <div class="live-inputs">
+        <div class="input-row">
+          <div class="field">
+            <label for="li-weight">Peso (kg)</label>
+            <input id="li-weight" type="number" min="-999" max="500" step="0.1" placeholder="70" oninput="liveCalc()"/>
+          </div>
+          <div class="field">
+            <label for="li-height">Altura (cm)</label>
+            <input id="li-height" type="number" min="1" max="300" step="1" placeholder="175" oninput="liveCalc()"/>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label for="li-age">Edad (años)</label>
+            <input id="li-age" type="number" min="-99" max="150" step="1" placeholder="30" oninput="liveCalc()"/>
+          </div>
+          <div class="field">
+            <label for="li-gender">Género</label>
+            <select id="li-gender" onchange="liveCalc()">
+              <option value="">— selecciona —</option>
+              <option value="MALE">Hombre (MALE)</option>
+              <option value="FEMALE">Mujer (FEMALE)</option>
+            </select>
+          </div>
+        </div>
+        <div class="input-row">
+          <div class="field">
+            <label for="li-obj">Objetivo</label>
+            <select id="li-obj" onchange="liveCalc()">
+              <option value="MAINTENANCE">Mantenimiento</option>
+              <option value="LOSE_WEIGHT">Perder peso (−20%)</option>
+              <option value="GAIN_MUSCLE">Ganar músculo (+10%)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="li-act">Actividad</label>
+            <select id="li-act" onchange="liveCalc()">
+              <option value="SEDENTARY">Sedentario ×1.2</option>
+              <option value="LIGHT">Ligero ×1.375</option>
+              <option value="MODERATE" selected>Moderado ×1.55</option>
+              <option value="ACTIVE">Activo ×1.725</option>
+              <option value="VERY_ACTIVE">Muy activo ×1.9</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <!-- OUTPUT -->
+      <div class="live-output" id="live-out">
+        <div class="output-empty">Introduce datos o selecciona un preset para ver el cálculo</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- CÓDIGO FUENTE -->
+  <div>
+    <div class="sec-title"><span>📄</span> Código bajo prueba · PHP portado a JS</div>
+    <div class="code-block"><span class="cmt">// Portado 1:1 desde api/nutrition.php — Fórmula Mifflin-St Jeor</span>
+<span class="kw">function</span> <span class="fn">calculate_macros</span>(<span class="var">weight</span>, <span class="var">height</span>, <span class="var">age</span>, <span class="var">gender</span>, <span class="var">objective</span>, <span class="var">activity</span>) {
+  <span class="kw">const</span> <span class="var">genderConst</span> = gender === <span class="str">'FEMALE'</span> ? <span class="num">-161</span> : <span class="num">5</span>;
+  <span class="kw">const</span> <span class="var">tmb</span>  = (<span class="num">10</span> * weight) + (<span class="num">6.25</span> * height) - (<span class="num">5</span> * age) + genderConst;
+  <span class="kw">const</span> <span class="var">facs</span> = { SEDENTARY:<span class="num">1.2</span>, LIGHT:<span class="num">1.375</span>, MODERATE:<span class="num">1.55</span>, ACTIVE:<span class="num">1.725</span>, VERY_ACTIVE:<span class="num">1.9</span> };
+  <span class="kw">const</span> <span class="var">tdee</span> = tmb * (facs[activity] !== <span class="kw">undefined</span> ? facs[activity] : <span class="num">1.55</span>);
+  <span class="kw">const</span> <span class="var">adjs</span> = { LOSE_WEIGHT:<span class="num">-0.20</span>, GAIN_MUSCLE:<span class="num">0.10</span> };
+  <span class="kw">const</span> <span class="var">adj</span>  = adjs[objective] !== <span class="kw">undefined</span> ? adjs[objective] : <span class="num">0.00</span>;
+  <span class="kw">const</span> <span class="var">cal</span>  = Math.max(<span class="num">1200</span>, tdee * (<span class="num">1</span> + adj));
+  <span class="kw">const</span> <span class="var">prot</span> = weight * <span class="num">2.0</span>;
+  <span class="kw">const</span> <span class="var">fat</span>  = (cal * <span class="num">0.25</span>) / <span class="num">9</span>;
+  <span class="kw">const</span> <span class="var">carb</span> = (cal - (prot * <span class="num">4</span> + fat * <span class="num">9</span>)) / <span class="num">4</span>;
+  <span class="kw">return</span> {
+    calories: Math.round(cal), protein_g: Math.round(prot),
+    carbs_g:  Math.round(carb), fat_g:    Math.round(fat),
+    tmb:      Math.round(tmb),  tdee:     Math.round(tdee),
+    adjustment: Math.round(cal - tdee)
+  };
+}</div>
+  </div>
+
+  <!-- BLOQUE 1 -->
+  <div>
+    <div class="sec-title"><span>1</span> Caja Negra · Clases de Equivalencia</div>
+    <div class="test-list" id="b1"></div>
+  </div>
+
+  <!-- BLOQUE 2 -->
+  <div>
+    <div class="sec-title"><span>2</span> Caja Negra · Valores Límite</div>
+    <div class="test-list" id="b2"></div>
+  </div>
+
+  <!-- BLOQUE 3 -->
+  <div>
+    <div class="sec-title"><span>3</span> Caja Blanca · Caminos P1–P4 · V(G)=4</div>
+    <div class="info-box" style="margin-bottom:1rem">
+      <h3>📊 Grafo de flujo — 8 nodos, 3 bifurcaciones, 0 bucles</h3>
+      <div class="f-row">
+        <div class="f-line"><strong>Nodo 2</strong> — Decisión género: FEMALE (−161) ó MALE (+5)</div>
+        <div class="f-line"><strong>Nodo 4</strong> — Decisión actividad: factor conocido ó fallback 1.55</div>
+        <div class="f-line"><strong>Nodo 5</strong> — Decisión objetivo: LOSE (−20%) | GAIN (+10%) | default (0%)</div>
+        <div class="f-line"><strong>V(G) = 4</strong> confirmado por 3 métodos: regiones · aristas−nodos+2 · condiciones+1</div>
+      </div>
+      
+      <!-- CFG GRAPH -->
+      <div style="margin-top: 2.5rem; margin-bottom: 1rem; text-align: center; overflow-x: auto; padding-bottom: 1rem;">
+        <svg width="100%" height="auto" viewBox="0 0 650 440" xmlns="http://www.w3.org/2000/svg" style="max-width: 650px; margin: 0 auto; display: block; font-family: 'Inter', sans-serif;">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#ff3b3b" />
+            </marker>
+            <filter id="glow">
+              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#ff3b3b" flood-opacity="0.4"/>
+            </filter>
+          </defs>
+
+          <!-- Edges -->
+          <g stroke="#ff3b3b" stroke-width="1.5" fill="none" marker-end="url(#arrow)" opacity="0.6">
+            <path d="M 100 80 L 250 80" />
+            <path d="M 250 80 L 400 80" />
+            <path d="M 250 80 L 250 220" />
+            <path d="M 400 80 L 550 80" />
+            <path d="M 550 80 L 250 220" />
+            <path d="M 550 80 L 400 220" />
+            <path d="M 250 220 L 400 220" />
+            <path d="M 400 220 L 550 220" />
+            <path d="M 250 220 L 400 360" />
+            <path d="M 550 220 L 400 360" />
+          </g>
+
+          <!-- Edge Labels -->
+          <g fill="#ff8a8a" font-size="12" font-weight="600" text-anchor="middle">
+            <text x="325" y="72">Sí</text>
+            <text x="235" y="150">No</text>
+            <text x="360" y="155">Sí</text>
+            <text x="495" y="155">No</text>
+            <text x="315" y="300">No</text>
+          </g>
+
+          <!-- Normal Nodes -->
+          <g fill="#0f1219" stroke="#ff3b3b" stroke-width="2" filter="url(#glow)">
+            <circle cx="100" cy="80" r="16" />
+            <circle cx="400" cy="80" r="16" />
+            <circle cx="400" cy="220" r="16" />
+            <circle cx="550" cy="220" r="16" />
+            <circle cx="400" cy="360" r="16" />
+          </g>
+          
+          <!-- Filled Nodes (Decisions) -->
+          <g fill="rgba(255,59,59,.15)" stroke="#ff3b3b" stroke-width="2" filter="url(#glow)">
+            <circle cx="250" cy="80" r="16" />
+            <circle cx="550" cy="80" r="16" />
+            <circle cx="250" cy="220" r="16" />
+          </g>
+
+          <!-- Double Circle for Node 8 -->
+          <circle cx="400" cy="360" r="10" fill="none" stroke="#ff3b3b" stroke-width="1.5" />
+
+          <!-- Node IDs -->
+          <g fill="#f0f4f8" font-size="14" font-weight="bold" text-anchor="middle" dominant-baseline="central" font-family="'JetBrains Mono', monospace">
+            <text x="100" y="80">1</text>
+            <text x="250" y="80">2</text>
+            <text x="400" y="80">3</text>
+            <text x="550" y="80">4</text>
+            <text x="250" y="220">5</text>
+            <text x="400" y="220">6</text>
+            <text x="550" y="220">7</text>
+            <text x="400" y="360">8</text>
+          </g>
+          
+          <!-- Node Descriptions -->
+          <g fill="#6b7588" font-size="11" text-anchor="middle" dominant-baseline="central">
+            <text x="100" y="50">Inicio (L1-4)</text>
+            <text x="250" y="50">Género (L5)</text>
+            <text x="400" y="50">TMB (L6-7)</text>
+            <text x="550" y="50">Actividad (L8-13)</text>
+            <text x="250" y="250">Objetivo (L14-18)</text>
+            <text x="400" y="250">Mín. 1200 (L19)</text>
+            <text x="550" y="250">Macros (L20-22)</text>
+            <text x="400" y="395">Retorno (L23-32)</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="test-list" id="b3"></div>
+  </div>
+
+  <!-- BLOQUE 4 -->
+  <div>
+    <div class="sec-title"><span>4</span> Conjetura de Errores · Comportamiento Documentado</div>
+    <div class="test-list" id="b4"></div>
+  </div>
+
+  <!-- BLOQUE 5 -->
+  <div>
+    <div class="sec-title"><span>5</span> Casos de Uso del Plan · CP05 y CP06</div>
+    <div class="test-list" id="b5"></div>
+  </div>
+
+  <!-- FÓRMULA -->
+  <div>
+    <div class="sec-title"><span>📐</span> Verificación Manual CP01</div>
+    <div class="info-box">
+      <h3>🧮 Hombre · 70 kg · 175 cm · 30 años · mantenimiento · moderado</h3>
+      <div class="f-row">
+        <div class="f-line">TMB  = (10×70) + (6.25×175) − (5×30) + 5 = 700 + 1093.75 − 150 + 5 = <strong>1648.75</strong></div>
+        <div class="f-line">TDEE = 1648.75 × 1.55 (moderado) = 2555.56 → round → <strong>2556 kcal</strong></div>
+        <div class="f-line">Proteína = 70 × 2.0 = <strong>140 g</strong></div>
+        <div class="f-line">Grasa    = (2556 × 0.25) / 9 = 70.9 → <strong>71 g</strong></div>
+        <div class="f-line">Carbos   = (2556 − 560 − 639) / 4 = 1357/4 = <strong>339 g</strong></div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  FitPaisa · Plan de Pruebas Automatizado · Javier A. García Vargas · 2026 &nbsp;·&nbsp;
+  <a href="javascript:void(0)" onclick="runAll()">▶ Re-ejecutar tests</a>
+</footer>
+
+<script>
+/* ════════════════════════════════════════════════════
+   FUNCIÓN calculate_macros (portada 1:1 desde PHP)
+════════════════════════════════════════════════════ */
+function calculate_macros(weight, height, age, gender, objective, activity) {
+  var genderConst = (gender === 'FEMALE') ? -161 : 5;
+  var tmb  = (10 * weight) + (6.25 * height) - (5 * age) + genderConst;
+  var facs = { SEDENTARY:1.2, LIGHT:1.375, MODERATE:1.55, ACTIVE:1.725, VERY_ACTIVE:1.9 };
+  var factor = (facs[activity] !== undefined) ? facs[activity] : 1.55;
+  var tdee = tmb * factor;
+  var adjs = { LOSE_WEIGHT:-0.20, GAIN_MUSCLE:0.10 };
+  var adj  = (adjs[objective] !== undefined) ? adjs[objective] : 0.00;
+  var cal  = Math.max(1200, tdee * (1 + adj));
+  var prot = weight * 2.0;
+  var fat  = (cal * 0.25) / 9;
+  var carb = (cal - (prot * 4 + fat * 9)) / 4;
+  return {
+    calories:   Math.round(cal),
+    protein_g:  Math.round(prot),
+    carbs_g:    Math.round(carb),
+    fat_g:      Math.round(fat),
+    tmb:        Math.round(tmb),
+    tdee:       Math.round(tdee),
+    adjustment: Math.round(cal - tdee)
+  };
+}
+
+/* ════════════════════════════════════════════════════
+   PRESETS
+════════════════════════════════════════════════════ */
+var PRESETS = {
+  CN01: { weight:70,  height:175, age:30,  gender:'MALE',   obj:'MAINTENANCE', act:'MODERATE'   },
+  CN02: { weight:60,  height:165, age:28,  gender:'FEMALE', obj:'LOSE_WEIGHT', act:'LIGHT'      },
+  CN03: { weight:80,  height:180, age:35,  gender:'MALE',   obj:'GAIN_MUSCLE', act:'ACTIVE'     },
+  CN04: { weight:75,  height:170, age:40,  gender:'MALE',   obj:'MAINTENANCE', act:'VERY_ACTIVE' },
+  CB01: { weight:35,  height:150, age:80,  gender:'FEMALE', obj:'LOSE_WEIGHT', act:'SEDENTARY'  },
+  CB05: { weight:70,  height:175, age:30,  gender:'MALE',   obj:'MAINTENANCE', act:'VERY_ACTIVE' },
+  CE01: { weight:0,   height:175, age:30,  gender:'MALE',   obj:'MAINTENANCE', act:'MODERATE'   },
+  CE02: { weight:70,  height:175, age:-5,  gender:'MALE',   obj:'MAINTENANCE', act:'MODERATE'   }
+};
+
+function loadPreset(key) {
+  var p = PRESETS[key];
+  if (!p) return;
+  document.getElementById('li-weight').value = p.weight;
+  document.getElementById('li-height').value = p.height;
+  document.getElementById('li-age').value    = p.age;
+  document.getElementById('li-gender').value = p.gender;
+  document.getElementById('li-obj').value    = p.obj;
+  document.getElementById('li-act').value    = p.act;
+  // highlight active preset
+  document.querySelectorAll('.preset-btn').forEach(function(b){ b.classList.remove('active'); });
+  var pb = document.getElementById('pb-' + key);
+  if (pb) pb.classList.add('active');
+  liveCalc();
+}
+
+function clearCalc() {
+  ['li-weight','li-height','li-age'].forEach(function(id){
+    document.getElementById(id).value = '';
+    document.getElementById(id).classList.remove('invalid');
+  });
+  document.getElementById('li-gender').value = '';
+  document.getElementById('li-obj').value    = 'MAINTENANCE';
+  document.getElementById('li-act').value    = 'MODERATE';
+  document.querySelectorAll('.preset-btn').forEach(function(b){ b.classList.remove('active'); });
+  document.getElementById('live-out').innerHTML = '<div class="output-empty">Introduce datos o selecciona un preset para ver el cálculo</div>';
+}
+
+/* ════════════════════════════════════════════════════
+   CALCULADORA EN VIVO
+════════════════════════════════════════════════════ */
+function liveCalc() {
+  var wVal = document.getElementById('li-weight').value;
+  var hVal = document.getElementById('li-height').value;
+  var aVal = document.getElementById('li-age').value;
+  var gender = document.getElementById('li-gender').value;
+  var obj    = document.getElementById('li-obj').value;
+  var act    = document.getElementById('li-act').value;
+  var out    = document.getElementById('live-out');
+
+  // Parse — allow 0 and negatives (for CE demos)
+  var weight = (wVal === '' || wVal === null) ? null : parseFloat(wVal);
+  var height = (hVal === '' || hVal === null) ? null : parseFloat(hVal);
+  var age    = (aVal === '' || aVal === null) ? null : parseFloat(aVal);
+
+  // Visual validation
+  document.getElementById('li-weight').classList.toggle('invalid', weight !== null && weight <= 0);
+  document.getElementById('li-height').classList.toggle('invalid', height !== null && height <= 0);
+  document.getElementById('li-age').classList.toggle('invalid',    age    !== null && age    <= 0);
+
+  if (weight === null || height === null || age === null || gender === '') {
+    out.innerHTML = '<div class="output-empty">Completa todos los campos para ver el resultado</div>';
+    return;
+  }
+
+  var r = calculate_macros(weight, height, age, gender, obj, act);
+
+  var facLabels = { SEDENTARY:'×1.2', LIGHT:'×1.375', MODERATE:'×1.55', ACTIVE:'×1.725', VERY_ACTIVE:'×1.9' };
+  var facLabel  = facLabels[act] || '×1.55 (fallback)';
+  var gConst    = (gender === 'FEMALE') ? '−161' : '+5';
+  var adjMap    = { LOSE_WEIGHT:-0.20, GAIN_MUSCLE:0.10 };
+  var adjVal    = (adjMap[obj] !== undefined) ? adjMap[obj] : 0;
+  var adjFactor = (1 + adjVal).toFixed(2);
+
+  // Warnings
+  var warns = [];
+  if (weight <= 0) warns.push('⚠ Peso ≤ 0: sin sentido físico — CE01 — deuda de validación en el endpoint');
+  if (age <= 0)    warns.push('⚠ Edad ≤ 0: TMB alterada — CE02 — deuda de validación en el endpoint');
+  var calLimited = (r.calories === 1200 && r.tdee < 1200);
+  if (calLimited)  warns.push('⚠ Mínimo 1200 kcal activado — CB01 — límite de seguridad nutricional');
+
+  // Macro %
+  var protPct = Math.round((r.protein_g * 4 / r.calories) * 100);
+  var fatPct  = Math.round((r.fat_g * 9  / r.calories) * 100);
+  var carbPct = Math.max(0, 100 - protPct - fatPct);
+
+  // Adjustment badge
+  var adjBadge = '';
+  if (r.adjustment > 0)       adjBadge = '<span class="kcal-note adj-pos">+' + r.adjustment + ' kcal superávit</span>';
+  else if (r.adjustment < 0)  adjBadge = '<span class="kcal-note adj-neg">' + r.adjustment + ' kcal déficit</span>';
+  else                        adjBadge = '<span class="kcal-note neutral">Sin ajuste — mantenimiento</span>';
+
+  var limitBadge = calLimited ? '<br><span class="kcal-note limited">⚠ Mínimo 1200 kcal aplicado</span>' : '';
+  var warnHtml   = warns.length ? '<div class="warn-box">' + warns.join('<br>') + '</div>' : '';
+
+  out.innerHTML =
+    '<div class="kcal-display">' +
+      '<div class="kcal-big">' + r.calories + '</div>' +
+      '<div class="kcal-label">kcal / día</div>' +
+      adjBadge + limitBadge +
+    '</div>' +
+
+    '<div>' +
+      '<div class="sec-label">Macronutrientes</div>' +
+      '<div class="macro-bars">' +
+        '<div class="macro-row"><span class="macro-name">Proteína</span>' +
+          '<div class="macro-track"><div class="macro-fill prot" style="width:' + protPct + '%"></div></div>' +
+          '<span class="macro-val">' + r.protein_g + ' g</span></div>' +
+        '<div class="macro-row"><span class="macro-name">Carbos</span>' +
+          '<div class="macro-track"><div class="macro-fill carb" style="width:' + carbPct + '%"></div></div>' +
+          '<span class="macro-val">' + r.carbs_g + ' g</span></div>' +
+        '<div class="macro-row"><span class="macro-name">Grasa</span>' +
+          '<div class="macro-track"><div class="macro-fill fat" style="width:' + fatPct + '%"></div></div>' +
+          '<span class="macro-val">' + r.fat_g + ' g</span></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div>' +
+      '<div class="sec-label">Valores internos</div>' +
+      '<div class="mini-grid">' +
+        '<div class="mini-cell"><div class="mini-key">TMB basal</div><div class="mini-val">' + r.tmb + ' kcal</div></div>' +
+        '<div class="mini-cell"><div class="mini-key">TDEE total</div><div class="mini-val">' + r.tdee + ' kcal</div></div>' +
+      '</div>' +
+    '</div>' +
+
+    '<div>' +
+      '<div class="sec-label">Paso a paso · fórmula</div>' +
+      '<div class="step-box">' +
+        '<b>TMB</b>  = (10×' + weight + ') + (6.25×' + height + ') − (5×' + age + ') ' + gConst + '<br>' +
+        '&nbsp;&nbsp;&nbsp;&nbsp; = ' + (10*weight).toFixed(2) + ' + ' + (6.25*height).toFixed(2) + ' − ' + (5*age).toFixed(2) + ' ' + gConst + ' = <em>' + r.tmb + '</em><br>' +
+        '<b>TDEE</b> = ' + r.tmb + ' ' + facLabel + ' = <em>' + r.tdee + '</em><br>' +
+        '<b>Cal</b>  = max(1200, ' + r.tdee + ' × ' + adjFactor + ') = <em>' + r.calories + '</em><br>' +
+        '<b>Prot</b> = ' + weight + ' × 2.0 = <em>' + r.protein_g + ' g</em><br>' +
+        '<b>Gras</b> = (' + r.calories + ' × 0.25) / 9 = <em>' + r.fat_g + ' g</em><br>' +
+        '<b>Carb</b> = (' + r.calories + ' − ' + (r.protein_g*4) + ' − ' + (r.fat_g*9) + ') / 4 = <em>' + r.carbs_g + ' g</em>' +
+      '</div>' +
+    '</div>' +
+
+    warnHtml;
+}
+
+/* ════════════════════════════════════════════════════
+   TESTS AUTOMATIZADOS
+════════════════════════════════════════════════════ */
+var TESTS = [
+  // Bloque 1 – Clases de equivalencia
+  { block:'b1', id:'CN01', path:'P3', label:'Hombre · mantenimiento · actividad moderada',
+    type:'fields', run:function(){ return calculate_macros(70,175,30,'MALE','MAINTENANCE','MODERATE'); },
+    exp:{ calories:2556, protein_g:140, carbs_g:339, fat_g:71, tmb:1649, tdee:2556, adjustment:0 } },
+  { block:'b1', id:'CN02', path:'P1', label:'Mujer · pérdida de peso · actividad ligera',
+    type:'fields', run:function(){ return calculate_macros(60,165,28,'FEMALE','LOSE_WEIGHT','LIGHT'); },
+    exp:{ calories:1463, protein_g:120, carbs_g:154, fat_g:41, tmb:1330, tdee:1829, adjustment:-366 } },
+  { block:'b1', id:'CN03', path:'P2', label:'Hombre · ganancia muscular · actividad alta',
+    type:'fields', run:function(){ return calculate_macros(80,180,35,'MALE','GAIN_MUSCLE','ACTIVE'); },
+    exp:{ calories:3330, protein_g:160, carbs_g:464, fat_g:93, tmb:1755, tdee:3027, adjustment:303 } },
+  { block:'b1', id:'CN04', path:'P4', label:'Hombre · mantenimiento · muy activo',
+    type:'fields', run:function(){ return calculate_macros(75,170,40,'MALE','MAINTENANCE','VERY_ACTIVE'); },
+    exp:{ calories:3073, protein_g:150, carbs_g:426, fat_g:85, tmb:1618, tdee:3073, adjustment:0 } },
+
+  // Bloque 2 – Valores límite
+  { block:'b2', id:'CB01', path:'AVL01', label:'Límite inferior 1200 kcal · mujer extrema sedentaria',
+    type:'cond', run:function(){ return calculate_macros(35,150,80,'FEMALE','LOSE_WEIGHT','SEDENTARY'); },
+    check:function(r){ return r.calories === 1200; },
+    failMsg:function(r){ return 'calories=' + r.calories + ', esperado=1200'; } },
+  { block:'b2', id:'CB02', path:'AVL04', label:'Actividad desconocida → fallback factor 1.55',
+    type:'cond',
+    run:function(){ return { known:calculate_macros(70,175,30,'MALE','MAINTENANCE','MODERATE'),
+                            unknown:calculate_macros(70,175,30,'MALE','MAINTENANCE','UNKNOWN') }; },
+    check:function(r){ return r.unknown.calories === r.known.calories && r.unknown.tdee === r.known.tdee; },
+    failMsg:function(r){ return 'UNKNOWN tdee=' + r.unknown.tdee + ' vs MODERATE tdee=' + r.known.tdee; } },
+  { block:'b2', id:'CB03', path:'AVL03', label:'Género ≠ FEMALE → constante masculina (+5)',
+    type:'cond',
+    run:function(){ return { male:calculate_macros(70,175,30,'MALE','MAINTENANCE','MODERATE'),
+                            other:calculate_macros(70,175,30,'OTHER','MAINTENANCE','MODERATE') }; },
+    check:function(r){ return r.male.tmb === r.other.tmb; },
+    failMsg:function(r){ return 'tmb_MALE=' + r.male.tmb + ', tmb_OTHER=' + r.other.tmb; } },
+  { block:'b2', id:'CB04', path:'AVL02', label:'Actividad mínima SEDENTARY · factor 1.2',
+    type:'fields', run:function(){ return calculate_macros(70,175,30,'MALE','MAINTENANCE','SEDENTARY'); },
+    exp:{ tdee:1979, calories:1979 } },
+  { block:'b2', id:'CB05', path:'AVL03', label:'Actividad máxima VERY_ACTIVE · factor 1.9',
+    type:'fields', run:function(){ return calculate_macros(70,175,30,'MALE','MAINTENANCE','VERY_ACTIVE'); },
+    exp:{ tdee:3133, calories:3133 } },
+
+  // Bloque 3 – Caminos caja blanca
+  { block:'b3', id:'CW-P1', path:'Camino P1', label:'FEMALE → LIGHT → LOSE_WEIGHT → adjustment negativo',
+    type:'cond', run:function(){ return calculate_macros(60,165,28,'FEMALE','LOSE_WEIGHT','LIGHT'); },
+    check:function(r){ return r.adjustment < 0 && r.calories >= 1200; },
+    failMsg:function(r){ return 'adjustment=' + r.adjustment + ', calories=' + r.calories; } },
+  { block:'b3', id:'CW-P2', path:'Camino P2', label:'MALE → ACTIVE → GAIN_MUSCLE → adjustment positivo',
+    type:'cond', run:function(){ return calculate_macros(80,180,35,'MALE','GAIN_MUSCLE','ACTIVE'); },
+    check:function(r){ return r.adjustment > 0; },
+    failMsg:function(r){ return 'adjustment=' + r.adjustment; } },
+  { block:'b3', id:'CW-P3', path:'Camino P3', label:'MALE → MODERATE → MAINTENANCE → adjustment cero',
+    type:'cond', run:function(){ return calculate_macros(70,175,30,'MALE','MAINTENANCE','MODERATE'); },
+    check:function(r){ return r.adjustment === 0; },
+    failMsg:function(r){ return 'adjustment=' + r.adjustment; } },
+  { block:'b3', id:'CW-P4', path:'Camino P4', label:'Actividad inválida → fallback 1.55 = mismo TDEE que MODERATE',
+    type:'cond',
+    run:function(){ return { p3:calculate_macros(70,175,30,'MALE','MAINTENANCE','MODERATE'),
+                            p4:calculate_macros(70,175,30,'MALE','MAINTENANCE','ULTRA_INTENSE') }; },
+    check:function(r){ return r.p4.tdee === r.p3.tdee; },
+    failMsg:function(r){ return 'tdee_P4=' + r.p4.tdee + ', tdee_P3=' + r.p3.tdee; } },
+
+  // Bloque 4 – Conjetura de errores
+  { block:'b4', id:'CE01', path:'CE', label:'Peso = 0 → no lanza excepción (deuda de validación endpoint)',
+    type:'warn', run:function(){ return calculate_macros(0,175,30,'MALE','MAINTENANCE','MODERATE'); },
+    check:function(r){ return typeof r === 'object' && 'calories' in r; },
+    note:function(r){ return 'protein_g=' + r.protein_g + ' · La función no valida. Validar en el endpoint.'; } },
+  { block:'b4', id:'CE02', path:'CE', label:'Edad = −5 → no lanza excepción (deuda de validación endpoint)',
+    type:'warn', run:function(){ return calculate_macros(70,175,-5,'MALE','MAINTENANCE','MODERATE'); },
+    check:function(r){ return typeof r === 'object' && 'tmb' in r; },
+    note:function(r){ return 'tmb=' + r.tmb + ' con edad=-5 · Rechazar edades negativas en el endpoint.'; } },
+  { block:'b4', id:'CE05', path:'CE', label:'Objetivo desconocido → match default adj=0 (silencioso)',
+    type:'warn', run:function(){ return calculate_macros(70,175,30,'MALE','DEFINICION','MODERATE'); },
+    check:function(r){ return r.adjustment === 0; },
+    note:function(r){ return "Objetivo 'DEFINICION' → adj=0 (mantenimiento). Considerar notificar al usuario."; } },
+
+  // Bloque 5 – Casos de uso del plan
+  { block:'b5', id:'CP05', path:'CP', label:'Mínimo 1200 kcal · perfil extremo (35 kg, 80 a, mujer, sedentaria)',
+    type:'fields', run:function(){ return calculate_macros(35,150,80,'FEMALE','LOSE_WEIGHT','SEDENTARY'); },
+    exp:{ calories:1200 } },
+  { block:'b5', id:'CP06', path:'CP', label:'Actividad no reconocida → fallback 1.55 = mismo que MODERATE',
+    type:'fields', run:function(){ return calculate_macros(70,175,30,'MALE','MAINTENANCE','NIVEL_INEXISTENTE'); },
+    exp:{ calories:2556, tdee:2556 } }
+];
+
+/* ════════════════════════════════════════════════════
+   MOTOR DE TESTS
+════════════════════════════════════════════════════ */
+var stats = { ok:0, fail:0, warn:0, total:0 };
+
+function runTest(t) {
+  var result = t.run();
+  if (t.type === 'fields') {
+    var mm = {};
+    for (var k in t.exp) {
+      if (result[k] !== t.exp[k]) mm[k] = { expected:t.exp[k], got:result[k] };
+    }
+    var pass = Object.keys(mm).length === 0;
+    return { pass:pass, result:result, mismatches:mm, status:pass ? 'ok' : 'fail' };
+  }
+  if (t.type === 'cond') {
+    var pass = t.check(result);
+    return { pass:pass, result:result, failMsg:pass ? '' : t.failMsg(result), status:pass ? 'ok' : 'fail' };
+  }
+  if (t.type === 'warn') {
+    return { pass:true, result:result, note:t.note(result), status:'warn' };
+  }
+}
+
+function renderCard(t, o, delay) {
+  var icon = o.status === 'ok' ? '✓' : o.status === 'warn' ? '⚠' : '✗';
+  var cls  = o.status;
+  var body = '';
+
+  if (t.type === 'fields' && o.result && !Array.isArray(o.result)) {
+    body += '<div class="d-grid">';
+    for (var k in o.result) {
+      var mm = o.mismatches && o.mismatches[k];
+      var exp = (t.exp && t.exp[k] !== undefined) ? '<div class="d-exp">esp: ' + t.exp[k] + '</div>' : '';
+      body += '<div class="d-cell' + (mm ? ' mismatch' : '') + '">' +
+              '<div class="d-key">' + k + '</div>' +
+              '<div class="d-val">' + o.result[k] + '</div>' + exp + '</div>';
+    }
+    body += '</div>';
+  }
+
+  if (t.type === 'cond') {
+    if (!o.pass && o.failMsg) {
+      body += '<div class="warn-box" style="border-color:var(--border-fail);background:var(--glow-fail);color:var(--fail);margin-top:.75rem">✗ ' + o.failMsg + '</div>';
+    }
+    var res = o.result;
+    if (res && typeof res === 'object') {
+      if ('calories' in res) {
+        body += '<div class="d-grid" style="margin-top:.75rem">';
+        for (var k in res) body += '<div class="d-cell"><div class="d-key">' + k + '</div><div class="d-val">' + res[k] + '</div></div>';
+        body += '</div>';
+      } else {
+        for (var subKey in res) {
+          var sub = res[subKey];
+          if (typeof sub === 'object' && 'calories' in sub) {
+            body += '<div style="margin-top:.5rem;font-size:.72rem;color:var(--text-muted);font-family:JetBrains Mono,monospace">' + subKey + '</div>';
+            body += '<div class="d-grid">';
+            for (var k in sub) body += '<div class="d-cell"><div class="d-key">' + k + '</div><div class="d-val">' + sub[k] + '</div></div>';
+            body += '</div>';
+          }
+        }
+      }
+    }
+  }
+
+  if (t.type === 'warn') {
+    body += '<div class="warn-box" style="margin-top:.75rem">⚠ ' + o.note + '</div>';
+    var res = o.result;
+    if (res && 'calories' in res) {
+      body += '<div class="d-grid" style="margin-top:.5rem">';
+      for (var k in res) body += '<div class="d-cell"><div class="d-key">' + k + '</div><div class="d-val">' + res[k] + '</div></div>';
+      body += '</div>';
+    }
+  }
+
+  return '<div class="test-card ' + cls + '" style="animation-delay:' + delay + 's">' +
+    '<div class="test-header" onclick="toggleCard(this)">' +
+      '<div class="t-indicator">' + icon + '</div>' +
+      '<div class="t-id">' + t.id + '</div>' +
+      '<div class="t-label">' + t.label + '</div>' +
+      '<div class="t-path">' + t.path + '</div>' +
+      '<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>' +
+    '</div>' +
+    '<div class="test-body">' + (body || '<p style="color:var(--text-muted);font-size:.82rem;padding:.5rem 0">Sin detalles adicionales</p>') + '</div>' +
+    '</div>';
+}
+
+function runAll() {
+  stats = { ok:0, fail:0, warn:0, total:0 };
+  ['b1','b2','b3','b4','b5'].forEach(function(id){ document.getElementById(id).innerHTML = ''; });
+  document.getElementById('runStatus').textContent = 'Ejecutando…';
+  document.getElementById('scoreboard').classList.remove('visible');
+
+  var blockIdx = {};
+  TESTS.forEach(function(t) {
+    var o = runTest(t);
+    stats.total++;
+    if (o.status === 'ok')   stats.ok++;
+    else if (o.status === 'fail') stats.fail++;
+    else stats.warn++;
+    if (!blockIdx[t.block]) blockIdx[t.block] = 0;
+    document.getElementById(t.block).innerHTML += renderCard(t, o, blockIdx[t.block]++ * 0.04);
+  });
+
+  var pct = stats.total ? Math.round(stats.ok / stats.total * 100) : 0;
+  document.getElementById('scoreOk').textContent    = stats.ok;
+  document.getElementById('scoreFail').textContent   = stats.fail;
+  document.getElementById('scoreTotal').textContent  = stats.total;
+  document.getElementById('progressFill').style.width = pct + '%';
+
+  var badge = document.getElementById('verdictBadge');
+  if (stats.fail === 0) { badge.textContent = '✓ APROBADO'; badge.className = 'verdict pass'; }
+  else                  { badge.textContent = '✗ ' + stats.fail + ' ERROR(ES)'; badge.className = 'verdict fail'; }
+
+  document.getElementById('scoreboard').classList.add('visible');
+  document.getElementById('runStatus').textContent =
+    stats.ok + '/' + stats.total + ' OK · ' + stats.fail + ' fallidas · ' + stats.warn + ' advertencias';
+}
+
+function toggleCard(el) { el.parentElement.classList.toggle('expanded'); }
+function expandAll()  { document.querySelectorAll('.test-card').forEach(function(c){ c.classList.add('expanded'); }); }
+function collapseAll(){ document.querySelectorAll('.test-card').forEach(function(c){ c.classList.remove('expanded'); }); }
+
+// Auto-run on load
+window.addEventListener('load', function(){ setTimeout(runAll, 200); });
+</script>
+</body>
+</html>

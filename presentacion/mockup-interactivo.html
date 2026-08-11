@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FitPaisa — Design System & Componentes</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cabinet+Grotesk:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<style>
+/* ─── RESET & TOKENS ─── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  color-scheme: dark;
+  --r:#E30613; --rdim:rgba(227,6,19,.15); --rglow:rgba(227,6,19,.4);
+  --dk:#080a0f; --dk2:#0f1219;
+  --tx:#f0f4f8; --mu:#6b7588;
+  --bo:rgba(255,255,255,.08); --bo2:rgba(255,255,255,.14);
+  --gl:rgba(255,255,255,.04); 
+  --fd:'Bebas Neue',sans-serif; --fb:'Cabinet Grotesk',sans-serif;
+  --lime: #CCFF00; --success: #10B981; --warning: #F59E0B;
+}
+body{background:var(--dk);font-family:var(--fb);color:var(--tx);-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden;letter-spacing:0.3px}
+
+html { scrollbar-width: thin; scrollbar-color: var(--r) var(--dk); }
+::-webkit-scrollbar { width: 8px; height: 8px; background: var(--dk); }
+::-webkit-scrollbar-track { background: var(--dk); }
+::-webkit-scrollbar-thumb { background: var(--r); border-radius: 4px; border: 2px solid var(--dk); }
+::-webkit-scrollbar-thumb:hover { background: rgba(255,59,59,0.8); }
+
+/* ─── BG ─── */
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");}
+.bg-glow{position:fixed;top:0;left:0;width:400px;height:400px;background:var(--r);filter:blur(200px);opacity:0.1;border-radius:50%;pointer-events:none}
+
+.wrap{position:relative;z-index:1;padding:32px 24px;max-width:550px;margin:0 auto}
+
+/* ─── HEADER ─── */
+.hdr{text-align:center;margin-bottom:40px}
+.htag{display:inline-block;padding:4px 12px;background:var(--rdim);color:var(--r);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.2em;border-radius:100px;border:1px solid rgba(227,6,19,.2);margin-bottom:12px}
+.h1{font-family:var(--fd);font-size:42px;color:var(--tx);line-height:1;letter-spacing:.02em;margin-bottom:8px}
+.h1 span{color:var(--r)}
+.hp{font-size:14px;color:var(--mu)}
+
+/* ─── TIMELINE ─── */
+.tl{position:relative;padding-left:36px}
+.tl::before{content:'';position:absolute;top:10px;bottom:0;left:11px;width:2px;background:linear-gradient(to bottom, var(--r) 0%, rgba(227,6,19,.1) 90%, transparent 100%)}
+
+.node{position:relative;margin-bottom:48px}
+.node::before{content:'';position:absolute;left:-31px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--dk);border:2px solid var(--r);box-shadow:0 0 10px var(--rglow)}
+
+/* ─── NODE CONTENT ─── */
+.n-eyebrow{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.15em;color:var(--r);margin-bottom:4px}
+.n-title{font-family:var(--fd);font-size:26px;color:var(--tx);letter-spacing:4px;margin-bottom:12px;line-height:1}
+.n-box{background:var(--gl);border:1px solid var(--bo);border-radius:16px;padding:20px;box-shadow:0 10px 30px rgba(0,0,0,.5); margin-bottom:16px;}
+.l-desc{font-size:13px;color:var(--mu);line-height:1.5; margin-bottom:12px;}
+
+/* ─── COLORS ─── */
+.c-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+.c-item{display:flex;align-items:center;gap:10px}
+.c-circ{width:32px;height:32px;border-radius:50%;border:1px solid rgba(255,255,255,.1);flex-shrink:0}
+.c-name{font-size:11px;font-weight:700;color:var(--tx);margin-bottom:2px}
+.c-hex{font-size:10px;font-family:monospace;color:var(--mu)}
+
+/* ─── UI MINI-COMPS ─── */
+.u-glass{background:rgba(8,10,15,0.88); -webkit-backdrop-filter:blur(20px); backdrop-filter:blur(20px); border:1px solid var(--bo); border-radius:14px; padding:24px; box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.08);}
+.u-btn{display:inline-flex; align-items:center; justify-content:center; gap:10px; background:var(--r); color:var(--dk); padding:14px 28px; border:none; border-radius:4px; font-weight:800; font-family:var(--fb); font-size:14px; letter-spacing:.05em; text-transform:uppercase; margin-top:12px; box-shadow:0 8px 30px rgba(227,6,19,.15); transition:transform .2s, box-shadow .2s;}
+.u-btn:hover{transform:translateY(-2px); box-shadow:0 8px 30px var(--rglow);}
+.u-btn:active{transform:translateY(0); box-shadow:0 4px 15px var(--rglow);}
+.u-card-sel{flex:1; padding:16px 8px; border-radius:12px; text-align:center; font-size:14px; cursor:pointer; transition:all .2s;}
+.u-card-sel.active{border:1px solid var(--r); background:rgba(227,6,19,0.08); color:var(--tx); font-weight:700;}
+.u-card-sel:not(.active){border:1px solid var(--bo); color:var(--mu);}
+.u-card-sel:not(.active):hover{border-color:rgba(255,255,255,.25); background:var(--gl); color:var(--tx);}
+.u-card-sel:active{transform:scale(0.97);}
+.u-t{font-size:14px;font-weight:700;margin-bottom:4px}
+.u-d{font-size:13px;color:var(--mu);line-height:1.5;}
+.u-badge{display:inline-block;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.1em; margin-bottom:12px;}
+
+/* ─── NAV LINKS ─── */
+.nav-link{display:block; text-decoration:none; margin-bottom:8px;}
+.nav-link .u-glass{transition: border-color 0.2s, background 0.2s; padding:12px; display:flex; align-items:center; gap:12px;}
+.nav-link:hover .u-glass{border-color:rgba(227,6,19,.4); background:rgba(227,6,19,.05);}
+
+.reveal{/* Estado inicial gestionado por JS para evitar invisibilidad si GSAP falla */}
+</style>
+</head>
+<body>
+
+<div class="bg-glow"></div>
+
+<div class="wrap">
+  <header class="hdr reveal">
+    <div style="display:flex; justify-content:center; margin-bottom: 24px;">
+      <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" style="width: 60px; height: 60px;">
+        <rect width="100" height="100" rx="20" fill="#080a0f"/>
+        <text x="50" y="66" font-family="Arial Black, sans-serif" font-size="58" font-weight="900" fill="#ff3b3b" text-anchor="middle">FP</text>
+      </svg>
+    </div>
+    <div class="htag">Design System & Componentes</div>
+    <h1 class="h1">Ecosistema <span>FitPaisa</span></h1>
+    <p class="hp">Desglose visual, tipográfico y estructural de todas las vistas.</p>
+  </header>
+
+  <div class="tl">
+    <!-- FUNDAMENTOS -->
+    <div class="node reveal">
+      <div class="n-eyebrow">01. Fundamentos</div>
+      <h2 class="n-title">Base Global</h2>
+      <div class="n-box">
+        <p class="l-desc">Toda la plataforma comparte una paleta de alto contraste y un sistema tipográfico moderno.</p>
+        
+        <!-- Tipografia -->
+        <div style="padding-bottom:12px; margin-bottom:12px; border-bottom:1px solid var(--bo)">
+          <div style="font-size:10px;text-transform:uppercase;color:var(--mu);letter-spacing:.1em;margin-bottom:6px">Tipografía</div>
+          <div style="font-family:var(--fd);font-size:32px;line-height:1;color:var(--tx)">Bebas Neue (Display)</div>
+          <div style="font-family:var(--fb);font-size:14px;line-height:1.4;margin-top:4px;color:var(--mu)">Cabinet Grotesk (Body & UI). Alta legibilidad técnica.</div>
+        </div>
+
+        <!-- Paleta Global -->
+        <div style="font-size:10px;text-transform:uppercase;color:var(--mu);letter-spacing:.1em;margin-bottom:8px">Paleta Global</div>
+        <div class="c-grid">
+          <div class="c-item">
+            <div class="c-circ" style="background:var(--r); box-shadow:0 0 10px var(--rglow)"></div>
+            <div><div class="c-name">FitPaisa Red</div><div class="c-hex">#E30613</div></div>
+          </div>
+          <div class="c-item">
+            <div class="c-circ" style="background:var(--dk)"></div>
+            <div><div class="c-name">Deep Dark</div><div class="c-hex">#080A0F</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LANDING PAGE -->
+    <div class="node reveal">
+      <div class="n-eyebrow">02. Captación</div>
+      <h2 class="n-title">Landing Page</h2>
+      <div class="n-box">
+        <p class="l-desc">El <code>index.html</code> se enfoca en conversión. Usa animaciones GSAP, un fondo de malla 3D y formularios interactivos.</p>
+                <div class="u-glass" style="padding:20px">
+            <div class="u-badge" style="background:var(--rdim);color:var(--r);border:1px solid rgba(227,6,19,.2)">Call to Action Component</div>
+            <div class="u-t" style="font-family:var(--fd); font-size:24px; letter-spacing:0.02em;">Formulario Wizard</div>
+            <div class="u-d">Cards seleccionables con bordes dinámicos.</div>
+            <div style="display:flex;gap:12px;margin-top:16px">
+              <div class="u-card-sel active">Perder Peso</div>
+              <div class="u-card-sel">Ganar Masa</div>
+            </div>
+            <button class="u-btn" style="width:100%">Siguiente Paso</button>
+          </div>
+      </div>
+    </div>
+
+    <!-- PANEL CLIENTE -->
+    <div class="node reveal">
+      <div class="n-eyebrow">03. Usuario</div>
+      <h2 class="n-title">Panel Cliente</h2>
+      <div class="n-box">
+        <p class="l-desc"><code>fitpaisa_cliente-v2.html</code> divide visualmente la experiencia entre usuarios gratuitos (solo herramientas básicas) y usuarios de pago.</p>
+        
+        <div class="c-grid">
+          <div class="c-item">
+            <div class="c-circ" style="background:var(--lime)"></div>
+            <div><div class="c-name">Premium Lime</div><div class="c-hex">#CCFF00</div></div>
+          </div>
+          <div class="c-item">
+            <div class="c-circ" style="background:var(--success)"></div>
+            <div><div class="c-name">Success Green</div><div class="c-hex">#10B981</div></div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:12px; margin-bottom:16px">
+          <!-- FREE -->
+          <div class="u-glass" style="flex:1; padding:16px">
+            <div class="u-badge" style="background:var(--bo);color:var(--tx);border:none">Plan Free</div>
+            <div class="u-t" style="font-size:14px; font-family:var(--fd); letter-spacing:0.02em;">Métricas Básicas</div>
+            <div class="u-d">Contador de calorías.</div>
+          </div>
+          <!-- PREMIUM -->
+          <div class="u-glass" style="flex:1; padding:16px">
+            <div class="u-badge" style="background:rgba(204,255,0,0.15);color:var(--lime);border:1px solid rgba(204,255,0,0.3)">Premium</div>
+            <div class="u-t" style="font-size:14px; font-family:var(--fd); letter-spacing:0.02em;">Rutinas y Chat</div>
+            <div class="u-d">Bloqueado por Paywall.</div>
+          </div>
+        </div>
+
+        <div class="u-glass" style="padding:20px">
+          <div class="u-badge" style="background:rgba(204,255,0,0.15);color:var(--lime);border:1px solid rgba(204,255,0,0.3)">Premium Feature</div>
+          <div class="u-t" style="font-family:var(--fd); font-size:24px; letter-spacing:0.02em;">Seguimiento</div>
+          <div style="margin-top:16px; background:rgba(0,0,0,0.4); border-radius:10px; padding:14px; border:1px solid var(--bo); display:flex; align-items:center; gap:12px">
+            <div style="width:28px;height:28px;background:var(--success);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff">✓</div>
+            <div style="font-size:14px;font-weight:500;color:var(--tx)">Rutina Completada</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL ENTRENADOR -->
+    <div class="node reveal">
+      <div class="n-eyebrow">04. Staff</div>
+      <h2 class="n-title">Panel Entrenador</h2>
+      <div class="n-box">
+        <p class="l-desc"><code>fitpaisa_entrenador.html</code> optimiza el espacio con un Sidebar lateral y tablas de datos para gestión de clientes.</p>
+        
+        <div class="u-glass">
+          <div class="u-badge" style="background:rgba(255,255,255,0.1);color:var(--tx);border:1px solid var(--bo)">Data Grid Component</div>
+          <div class="u-t">Gestión de Usuarios</div>
+          <div style="margin-top:10px; background:var(--dk2); border-radius:6px; overflow:hidden; border:1px solid var(--bo)">
+            <div style="display:grid; grid-template-columns:2fr 1fr; padding:8px 12px; border-bottom:1px solid var(--bo); font-size:10px; color:var(--mu); font-weight:700; text-transform:uppercase">
+              <span>Cliente</span><span>Estado</span>
+            </div>
+            <div style="display:grid; grid-template-columns:2fr 1fr; padding:10px 12px; font-size:12px; color:var(--tx); align-items:center">
+              <span>Juan Pérez</span>
+              <span style="color:var(--success)">Activo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL ADMIN -->
+    <div class="node reveal">
+      <div class="n-eyebrow">05. Control</div>
+      <h2 class="n-title">Panel Admin</h2>
+      <div class="n-box">
+        <p class="l-desc"><code>fitpaisa_admin.html</code> utiliza tarjetas de métricas analíticas y gráficos financieros.</p>
+        
+        <div class="u-glass" style="display:flex; gap:12px">
+          <div style="flex:1; background:var(--dk); padding:12px; border-radius:8px; border:1px solid var(--bo)">
+            <div style="font-size:10px; color:var(--mu); text-transform:uppercase; font-weight:700">MRR (Mensual)</div>
+            <div style="font-family:var(--fd); font-size:24px; color:var(--tx)">$4.2K</div>
+            <div style="font-size:10px; color:var(--success)">+12% este mes</div>
+          </div>
+          <div style="flex:1; background:var(--dk); padding:12px; border-radius:8px; border:1px solid var(--bo)">
+            <div style="font-size:10px; color:var(--mu); text-transform:uppercase; font-weight:700">Usuarios</div>
+            <div style="font-family:var(--fd); font-size:24px; color:var(--tx)">1,204</div>
+            <div style="font-size:10px; color:var(--success)">Online</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVEGACIÓN -->
+    <div class="node reveal">
+      <div class="n-eyebrow">06. Ecosistema</div>
+      <h2 class="n-title">Explorar la App</h2>
+      <div class="n-box" style="display:flex; flex-direction:column; gap:8px;">
+        <p class="l-desc" style="margin-top:0; margin-bottom:4px">Abre los paneles interactivos reales:</p>
+        
+        <a href="https://fit-paisa.vercel.app/" target="_blank" rel="noopener noreferrer" class="nav-link">
+          <div class="u-glass">
+            <div style="font-size:18px; width:24px; text-align:center">🌍</div>
+            <div>
+              <div class="u-t" style="margin:0; font-size:13px; color:var(--tx)">Landing Page</div>
+              <div class="u-d">Captación y Onboarding</div>
+            </div>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      gsap.to(entry.target, {
+        opacity: 1,
+        y: 0,
+        duration: 0.6,
+        ease: 'power3.out',
+        delay: entry.target.dataset.delay || 0
+      });
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -20px 0px' });
+
+document.querySelectorAll('.reveal').forEach((el, index) => {
+  if(index < 2) el.dataset.delay = index * 0.1;
+  // Inicializamos el estado oculto vía JS para garantizar visibilidad si el script falla
+  gsap.set(el, { opacity: 0, y: 20 });
+  observer.observe(el);
+});
+</script>
+</body>
+</html>

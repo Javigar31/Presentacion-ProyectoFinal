@@ -23,7 +23,7 @@
   --fb:'Cabinet Grotesk',sans-serif;
   --li:#bfff00;--lidim:rgba(191,255,0,.12);
 }
-html{scroll-behavior:smooth;background:var(--dk);scroll-snap-type:y mandatory}
+html{scroll-behavior:smooth;background:var(--dk)}
 body{font-family:var(--fb);color:var(--tx);-webkit-font-smoothing:antialiased;overflow-x:hidden;background:var(--dk);letter-spacing:0.3px}
 html { scrollbar-width: thin; scrollbar-color: var(--r) var(--dk); }
 ::-webkit-scrollbar { width: 8px; height: 8px; background: var(--dk); }
@@ -50,7 +50,7 @@ nav#topnav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px
 .nc{font-family:var(--fd);font-size:13px;color:var(--mu);letter-spacing:.1em}
 .nc span{color:var(--r)}
 /* SLIDES */
-.slide{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:1;scroll-snap-align:start;scroll-snap-stop:always}
+.slide{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;overflow:hidden;z-index:1}
 .si{width:100%;max-width:1100px;margin:0 auto;padding:clamp(96px,13vh,136px) 48px clamp(56px,8vh,76px)}
 /* TYPOGRAPHY */
 .ey{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--r);font-weight:700;margin-bottom:14px;font-family:var(--fb);display:flex;align-items:center;gap:10px;margin-left:-34px}
@@ -591,17 +591,6 @@ const observer = new IntersectionObserver(entries => {
     if (entry.isIntersecting) {
       const idx = Array.from(slides).indexOf(entry.target);
       upNav(idx);
-      
-      // Animación de entrada al hacer snap
-      if (!PRM) {
-        const si = entry.target.querySelector('.si');
-        if (si) {
-          gsap.fromTo(si, 
-            { scale: 0.9, opacity: 0, y: 40 }, 
-            { scale: 1, opacity: 1, y: 0, duration: 0.8, ease: 'power3.out', clearProps: 'all' }
-          );
-        }
-      }
     }
   });
 }, { threshold: 0.5 });
@@ -620,6 +609,37 @@ function upNav(i) {
 }
 
 if (!PRM) {
+  // GSAP Scroll Snapping
+  ScrollTrigger.create({
+    trigger: document.body,
+    start: "top top",
+    end: "bottom bottom",
+    snap: {
+      snapTo: 1 / (slides.length - 1),
+      duration: 0.8,
+      ease: "power2.inOut"
+    }
+  });
+
+  // Slide Transitions (Parallax)
+  gsap.utils.toArray('.slide').forEach(slide => {
+    const si = slide.querySelector('.si');
+    if (si) {
+      gsap.to(si, {
+        yPercent: -40,
+        scale: 0.85,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: slide,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    }
+  });
+
   // Entrance animations
   gsap.utils.toArray('.rev').forEach(el => {
     gsap.from(el, {opacity:0, y:30, duration:0.85, ease:'power3.out',

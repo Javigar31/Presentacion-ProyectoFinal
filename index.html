@@ -626,6 +626,25 @@ if (!PRM) {
     gsap.to(b, {width:w+'%', duration:1.2, ease:'power3.out',
       scrollTrigger:{trigger:b, start:'top 92%', toggleActions:'play none none none'}});
   });
+  
+  // Parallax/Scale Slide Transitions
+  gsap.utils.toArray('.slide').forEach(slide => {
+    const si = slide.querySelector('.si');
+    if (si) {
+      gsap.to(si, {
+        yPercent: -30,
+        scale: 0.9,
+        opacity: 0,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: slide,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: true
+        }
+      });
+    }
+  });
 } else {
   document.querySelectorAll('.rev, .rstag').forEach(el => { el.style.opacity = 1; });
   document.querySelectorAll('.gbf').forEach(b => { b.style.width = b.dataset.w + '%'; });

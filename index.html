@@ -236,6 +236,70 @@ nav#topnav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px
   nav#topnav, #prog, .sh, #gbg { display: none !important; }
   .si { padding: 48px; max-width: 100%; }
 }
+/* COSTES B2B */
+.costs-slide {
+  padding: 1rem 0;
+  width: 100%;
+}
+.costs-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1.5rem 0;
+  font-size: 0.88rem;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+}
+.costs-table thead tr {
+  background: var(--gl);
+  color: var(--tx);
+}
+.costs-table th,
+.costs-table td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--bo);
+}
+.costs-table tbody tr:nth-child(even) {
+  background: var(--gl);
+}
+.costs-table tbody tr:hover {
+  background: var(--rdim);
+  transition: background 0.2s;
+}
+.highlight-col {
+  background: var(--rdim);
+  font-weight: 600;
+}
+.cost-value {
+  color: var(--r);
+  font-weight: 700;
+  font-family: var(--fd);
+  letter-spacing: 0.05em;
+}
+.total-row {
+  background: var(--rdim) !important;
+  font-size: 1rem;
+}
+.total-row.scaled {
+  background: var(--lidim) !important;
+}
+.total-value {
+  font-size: 1.1rem;
+  color: var(--tx) !important;
+}
+.scaled-value {
+  color: var(--li) !important;
+}
+.costs-note {
+  background: var(--gl);
+  border-left: 4px solid var(--li);
+  padding: 1rem 1.25rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--mu);
+}
 </style>
 </head>
 <body>
@@ -475,29 +539,79 @@ nav#topnav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px
 <section class="slide" id="slide-9" aria-label="Modelo financiero">
 <div class="si">
   <div class="ey rev">09 &mdash; Modelo financiero</div>
-  <h2 class="tgl rev">Coste <em>cero</em> en lanzamiento</h2>
-  <div class="fing rev">
-    <div>
-      <div class="finct">Costes operativos mensuales</div>
-      <div class="fitem"><span class="fn">Vercel (Hobby)</span><span class="fv fvg">0&euro;</span></div>
-      <div class="fitem"><span class="fn">Neon PostgreSQL (Free)</span><span class="fv fvg">0&euro;</span></div>
-      <div class="fitem"><span class="fn">Gmail SMTP</span><span class="fv fvg">0&euro;</span></div>
-      <div class="fitem"><span class="fn">Open Food Facts API</span><span class="fv fvg">0&euro;</span></div>
-      <div class="fitem"><span class="fn">Cloudinary (Free tier)</span><span class="fv fvg">0&euro;</span></div>
-      <div class="fitem" style="border-color:rgba(255,59,59,.2)"><span class="fn">Stripe comision</span><span class="fv fvr">~1,4% + 0,25&euro;</span></div>
-      <div class="ftot"><span style="font-weight:700">Total fijo mensual</span><span style="color:var(--li);font-size:17px;font-weight:800">0&euro;</span></div>
+  <div class="costs-slide rev">
+    <h2 class="tgl rev">Infraestructura: <em>de 0€ a escala B2B</em></h2>
+    <div class="rev" style="overflow-x:auto">
+      <table class="costs-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Plan Actual (Gratuito)</th>
+            <th>Límite del Plan Gratuito</th>
+            <th class="highlight-col">Plan B2B / Escalado</th>
+            <th class="highlight-col">Coste Mensual</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Vercel (Hosting + Serverless)</td>
+            <td>Hobby (Gratis)</td>
+            <td>100 GB ancho de banda / mes</td>
+            <td class="highlight-col">Pro (dominio propio, analíticas, SLA)</td>
+            <td class="highlight-col cost-value">20 €/mes</td>
+          </tr>
+          <tr>
+            <td>Neon PostgreSQL (BD)</td>
+            <td>Free (Gratis)</td>
+            <td>0,5 GB almacenamiento</td>
+            <td class="highlight-col">Scale (10 GB, backups avanzados)</td>
+            <td class="highlight-col cost-value">~19 $/mes</td>
+          </tr>
+          <tr>
+            <td>Cloudinary (Imágenes)</td>
+            <td>Free (Gratis)</td>
+            <td>25 GB almacenamiento y BW</td>
+            <td class="highlight-col">Plus (transformaciones avanzadas)</td>
+            <td class="highlight-col cost-value">~89 $/mes</td>
+          </tr>
+          <tr>
+            <td>Gmail SMTP (Correos)</td>
+            <td>App Password (Gratis)</td>
+            <td>500 correos/día</td>
+            <td class="highlight-col">Sin cambio necesario</td>
+            <td class="highlight-col cost-value">0 €/mes</td>
+          </tr>
+          <tr>
+            <td>Dominio personalizado</td>
+            <td>*.vercel.app (Gratis)</td>
+            <td>—</td>
+            <td class="highlight-col">Dominio propio (ej: gimnasioelite.com)</td>
+            <td class="highlight-col cost-value">~12 €/año</td>
+          </tr>
+          <tr>
+            <td>Stripe (Pagos)</td>
+            <td>Comisión por transacción</td>
+            <td>—</td>
+            <td class="highlight-col">Sin cambio (solo comisión variable)</td>
+            <td class="highlight-col cost-value">1,4% + 0,25€</td>
+          </tr>
+          <tr class="total-row">
+            <td colspan="3"><strong>TOTAL INFRAESTRUCTURA</strong></td>
+            <td class="highlight-col"><strong>Actual</strong></td>
+            <td class="highlight-col cost-value total-value"><strong>0 €/mes</strong></td>
+          </tr>
+          <tr class="total-row scaled">
+            <td colspan="3"><strong>TOTAL AL ESCALAR (B2B Cliente Real)</strong></td>
+            <td class="highlight-col"><strong>Escalado</strong></td>
+            <td class="highlight-col cost-value total-value scaled-value"><strong>~130 €/mes</strong></td>
+          </tr>
+        </tbody>
+      </table>
     </div>
-    <div>
-      <div class="finct">Proyeccion de ingresos Premium</div>
-      <div class="gbr"><div class="gbm"><span>10 Premiums</span><span style="color:var(--r)">149,90&euro;/mes</span></div><div class="gbb"><div class="gbf" id="gb1" style="background:var(--r)" data-w="15"></div></div></div>
-      <div class="gbr"><div class="gbm"><span>50 Premiums</span><span style="color:var(--r)">749,50&euro;/mes</span></div><div class="gbb"><div class="gbf" id="gb2" style="background:var(--r)" data-w="37"></div></div></div>
-      <div class="gbr"><div class="gbm"><span>100 Premiums</span><span style="color:var(--li)">1.499&euro;/mes</span></div><div class="gbb"><div class="gbf" id="gb3" style="background:var(--li)" data-w="65"></div></div></div>
-      <div class="gbr"><div class="gbm"><span>500 Premiums</span><span style="color:#22c55e">7.495&euro;/mes</span></div><div class="gbb"><div class="gbf" id="gb4" style="background:#22c55e" data-w="100"></div></div></div>
-      <div class="gc gcl" style="margin-top:18px">
-        <div style="font-size:11px;color:var(--li);font-weight:700;text-transform:uppercase;letter-spacing:.1em;margin-bottom:7px">Forma juridica</div>
-        <p style="font-size:13px;color:var(--mu)"><strong style="color:var(--tx)">Sociedad de Responsabilidad Limitada (S.L.)</strong> &mdash; Capital social minimo 3.000&euro;. Responsabilidad limitada, imagen profesional.</p>
-      </div>
-    </div>
+    <p class="costs-note rev" style="margin-top:14px">
+      ⚡ Punto de equilibrio: <strong>con 1 suscriptor Premium (14,99€) ya se cubre la infraestructura actual</strong>.<br>
+      El margen neto por suscriptor es ~96%. La viabilidad económica del modelo B2B es <strong>excepcional</strong>.
+    </p>
   </div>
 </div>
 </section>

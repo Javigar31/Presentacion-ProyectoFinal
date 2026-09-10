@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guion — FitPaisa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cabinet+Grotesk:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --r:#ff3b3b;--rdim:rgba(255,59,59,.15);--rglow:rgba(255,59,59,.3);
+  --dk:#080a0f;--dk2:#0f1219;--dk3:#161b24;
+  --tx:#f0f4f8;--mu:#6b7588;
+  --bo:rgba(255,255,255,.07);--bo2:rgba(255,255,255,.15);
+  --gl:rgba(255,255,255,.04);
+  --fd:'Bebas Neue',sans-serif;
+  --fb:'Cabinet Grotesk',sans-serif;
+  --li:#bfff00;--lidim:rgba(191,255,0,.12);
+}
+html{scroll-behavior:smooth;background:var(--dk);scrollbar-width:thin;scrollbar-color:var(--r) var(--dk)}
+::-webkit-scrollbar{width:6px;background:var(--dk)}
+::-webkit-scrollbar-thumb{background:var(--r);border-radius:4px}
+body{
+  font-family:var(--fb);
+  color:var(--tx);
+  background:var(--dk);
+  -webkit-font-smoothing:antialiased;
+  line-height:1.7;
+  font-size:18px;
+  padding:0;
+}
+
+/* FONDO */
+#gbg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg-grid{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.05) 1px,transparent 0);background-size:32px 32px}
+.bg-g1{position:absolute;width:600px;height:600px;border-radius:50%;background:var(--r);top:-10%;left:-10%;filter:blur(140px);opacity:.06}
+
+/* HEADER */
+.header{
+  position:sticky;top:0;z-index:100;
+  background:rgba(8,10,15,.9);
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--bo);
+  padding:14px 24px;
+  display:flex;align-items:center;gap:12px;
+}
+.header-logo{
+  width:32px;height:32px;border-radius:8px;
+  background:var(--r);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 12px var(--rglow);font-family:var(--fd);font-size:15px;color:var(--dk);font-weight:900;
+}
+.header-title{font-family:var(--fd);font-size:20px;color:var(--r);letter-spacing:.05em}
+.header-sub{font-size:12px;color:var(--mu);letter-spacing:.1em;text-transform:uppercase;margin-left:auto}
+
+/* CONTAINER */
+.container{
+  position:relative;z-index:1;
+  max-width:680px;margin:0 auto;
+  padding:32px 24px 80px;
+}
+
+/* TYPOGRAPHY del contenido generado por markdown */
+.container h1{
+  font-family:var(--fd);
+  font-size:clamp(36px,8vw,60px);
+  line-height:.95;
+  color:var(--tx);
+  letter-spacing:.02em;
+  margin:40px 0 8px;
+}
+.container h1 em{color:var(--r);font-style:normal}
+
+.container h2{
+  font-family:var(--fd);
+  font-size:clamp(28px,6vw,44px);
+  line-height:1;
+  color:var(--tx);
+  letter-spacing:.02em;
+  margin:48px 0 16px;
+  padding-top:24px;
+  border-top:1px solid var(--bo);
+}
+.container h2 em{color:var(--r);font-style:normal}
+
+.container h3{
+  font-family:var(--fd);
+  font-size:clamp(20px,4vw,30px);
+  color:var(--r);
+  letter-spacing:.05em;
+  margin:32px 0 10px;
+}
+
+.container h4{
+  font-family:var(--fb);
+  font-size:13px;
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.12em;
+  color:var(--mu);
+  margin:24px 0 8px;
+  display:flex;align-items:center;gap:8px;
+}
+.container h4::before{
+  content:'';display:block;width:20px;height:2px;
+  background:var(--r);box-shadow:0 0 6px var(--r);flex-shrink:0;
+}
+
+.container p{
+  margin-bottom:1.4em;
+  color:rgba(240,244,248,.85);
+  font-size:18px;
+  line-height:1.7;
+}
+
+.container strong{color:var(--tx);font-weight:700}
+
+.container em{color:var(--li);font-style:normal;font-weight:600}
+
+.container a{color:var(--r);text-decoration:none;border-bottom:1px solid rgba(255,59,59,.3)}
+.container a:hover{border-color:var(--r)}
+
+/* BLOCKQUOTE = cabeceras de slide */
+.container blockquote{
+  background:var(--rdim);
+  border:1px solid rgba(255,59,59,.3);
+  border-left:3px solid var(--r);
+  border-radius:0 12px 12px 0;
+  padding:16px 20px;
+  margin:36px 0 20px;
+  box-shadow:0 0 20px rgba(255,59,59,.08);
+}
+.container blockquote h2{
+  font-family:var(--fd);
+  font-size:clamp(18px,4vw,26px);
+  color:var(--r);
+  border:none;margin:0;padding:0;
+  letter-spacing:.05em;
+}
+
+/* KEYWORDS (inyectadas por JS) */
+.kw-pausa{
+  display:inline-block;
+  background:rgba(251,191,36,.12);
+  color:#fbbf24;
+  border:1px solid rgba(251,191,36,.3);
+  border-radius:8px;
+  padding:2px 10px;
+  font-size:13px;
+  font-weight:700;
+  font-family:var(--fb);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:4px 0;
+}
+.kw-slide{
+  display:block;
+  background:var(--rdim);
+  border:1px solid rgba(255,59,59,.35);
+  border-radius:10px;
+  padding:8px 16px;
+  font-size:14px;
+  font-weight:700;
+  font-family:var(--fd);
+  letter-spacing:.08em;
+  color:var(--r);
+  margin:8px 0 4px;
+  box-shadow:0 0 16px rgba(255,59,59,.1);
+}
+.kw-enfasis{
+  display:inline-block;
+  background:rgba(191,255,0,.1);
+  color:var(--li);
+  border:1px solid rgba(191,255,0,.25);
+  border-radius:8px;
+  padding:2px 10px;
+  font-size:13px;
+  font-weight:700;
+  font-family:var(--fb);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:4px 0;
+}
+.kw-mirar{
+  display:inline-block;
+  background:rgba(59,130,246,.1);
+  color:#60a5fa;
+  border:1px solid rgba(59,130,246,.25);
+  border-radius:8px;
+  padding:2px 10px;
+  font-size:13px;
+  font-weight:700;
+  font-family:var(--fb);
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin:4px 0;
+}
+
+/* HR */
+.container hr{
+  border:0;
+  height:1px;
+  background:linear-gradient(90deg,transparent,var(--bo2),transparent);
+  margin:40px 0;
+}
+
+/* TABLE */
+.container table{
+  width:100%;
+  border-collapse:collapse;
+  margin:20px 0 28px;
+  font-size:14px;
+  border-radius:12px;
+  overflow:hidden;
+  box-shadow:0 4px 24px rgba(0,0,0,.4);
+}
+.container thead tr{
+  background:var(--rdim);
+}
+.container th{
+  padding:10px 14px;
+  text-align:left;
+  font-size:10px;
+  text-transform:uppercase;
+  letter-spacing:.1em;
+  color:var(--mu);
+  font-weight:700;
+  border-bottom:1px solid rgba(255,59,59,.2);
+}
+.container td{
+  padding:10px 14px;
+  border-bottom:1px solid var(--bo);
+  color:rgba(240,244,248,.85);
+  vertical-align:middle;
+}
+.container tbody tr:last-child td{border-bottom:none}
+.container tbody tr:nth-child(even){background:var(--gl)}
+.container tbody tr:hover{background:rgba(255,59,59,.05);transition:background .2s}
+.container td:first-child{font-weight:600}
+
+/* CODE */
+.container code{
+  background:var(--dk3);
+  color:var(--r);
+  border:1px solid var(--bo);
+  padding:1px 6px;
+  border-radius:5px;
+  font-size:0.85em;
+  font-family:'JetBrains Mono',monospace;
+}
+.container pre{
+  background:var(--dk2);
+  border:1px solid var(--bo);
+  border-radius:10px;
+  padding:16px;
+  overflow-x:auto;
+  margin:16px 0;
+}
+.container pre code{background:none;border:none;color:var(--li);font-size:13px}
+
+/* UL / OL */
+.container ul,.container ol{
+  padding-left:1.5rem;
+  margin-bottom:1.2em;
+  color:rgba(240,244,248,.8);
+}
+.container li{margin-bottom:6px;line-height:1.6}
+
+/* PROGRESS BAR */
+#rdprog{
+  position:fixed;top:0;left:0;height:2px;
+  background:var(--r);z-index:1000;
+  transform-origin:left;transform:scaleX(0);
+  box-shadow:0 0 10px var(--r);
+  transition:transform .1s linear;
+}
+
+@media(max-width:600px){
+  .container{padding:20px 16px 60px}
+  .container p{font-size:16px}
+  .header-sub{display:none}
+}
+</style>
+</head>
+<body>
+
+<div id="gbg">
+  <div class="bg-grid"></div>
+  <div class="bg-g1"></div>
+</div>
+<div id="rdprog"></div>
+
+<div class="header">
+  <div class="header-logo">FP</div>
+  <div class="header-title">FitPaisa — Guion</div>
+  <div class="header-sub">Javier Andrés García Vargas · 2026</div>
+</div>
+
+<div class="container">
+  <h1>🎤 GUION PRESENTACIÓN FINAL — FIT-PAISA</h1>
+<h3>Versión 3 · Sincronizado slide a slide con <code>presentacion.html</code></h3>
+<p><strong>Javier Andrés García Vargas</strong></p>
+<hr />
+<blockquote>
+<p><strong>LEYENDA DE MARCADORES:</strong>
+- <code>⏸️ PAUSA</code> → Detente 1-2 segundos.
+- <code>⏩ SLIDE N</code> → Pasa a esa diapositiva <strong>ahora mismo</strong>.
+- <code>🔥 ÉNFASIS</code> → Sube el volumen o ralentiza.
+- <code>👀 MIRAR AL PÚBLICO</code> → Aparta la vista de la pantalla.
+- Ritmo recomendado: ~130 palabras/minuto. Cada parte: 7-8 minutos.</p>
+</blockquote>
+<h2>---</h2>
+<h1>🔷 PARTE 1: LA EMPRESA, EL PROYECTO Y EL MODELO DE NEGOCIO</h1>
+<hr />
+<hr />
+<h2>&gt; ## ⏩ SLIDE 0 — Portada (<code>#slide-0</code>)</h2>
+<p>Buenos días a todos.</p>
+<p>⏸️ PAUSA</p>
+<p>Mi nombre es Javier Andrés García Vargas, y el proyecto que voy a presentar hoy se llama <strong>Fit-Paisa</strong>.</p>
+<p>Quiero empezar con una pregunta sencilla, pero que tiene una respuesta más compleja de lo que parece.</p>
+<p>👀 MIRAR AL PÚBLICO</p>
+<p><strong>¿Cuántas aplicaciones necesitas hoy para llevar un seguimiento serio de tu entrenamiento?</strong></p>
+<p>⏸️ PAUSA</p>
+<p>Piénsalo. Necesitas una para contar las calorías, otra para registrar tus series y repeticiones, quizás un grupo de WhatsApp para hablar con tu entrenador, y si tienes suerte, una hoja de cálculo para ver tu evolución de peso.</p>
+<p>⏸️ PAUSA</p>
+<p>Cuatro herramientas. Cuatro puntos de fricción. Cuatro lugares distintos donde se pierde el contexto, la continuidad y, lo más importante, <strong>la motivación</strong>.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 1 — Idea de negocio (<code>#slide-1</code>)</h2>
+<p>FitPaisa nació para resolver exactamente ese problema. Es una plataforma web que centraliza en un único sistema todo lo que un atleta y su entrenador necesitan: el <strong>registro de comidas con cálculo automático de macronutrientes</strong>, los <strong>planes de entrenamiento personalizados</strong>, el <strong>seguimiento del progreso corporal</strong> con gráficas, y la <strong>mensajería directa</strong> entre cliente y entrenador, todo en tiempo real.</p>
+<p>⏸️ PAUSA</p>
+<p>El nombre no es casual. "Fit" hace referencia al estado físico óptimo. "Paisa" evoca cercanía, comunidad y familiaridad. Esta plataforma no quiere ser un software frío. Quiere ser el asistente digital más cercano en el proceso de transformación del usuario.</p>
+<p>⏸️ PAUSA</p>
+<p><strong>Aquí viene el punto más importante de esta primera parte.</strong></p>
+<p>⏸️ PAUSA</p>
+<p>🔥 ÉNFASIS Lo que tenemos delante no es únicamente una aplicación de fitness. Es un <strong>caso de éxito empaquetado como producto comercial</strong>.</p>
+<p>⏸️ PAUSA</p>
+<p>Fit-Paisa, tal y como lo estáis viendo, representa a "Gimnasio Fit-Paisa", un establecimiento hipotético que usamos como demostración. Pero el verdadero negocio es lo que hay detrás: 🔥 ÉNFASIS <strong>la capacidad de construir y desplegar esta plataforma personalizada para cualquier gimnasio real</strong>, con su propio nombre de dominio, su propia identidad visual, sus propios entrenadores y sus propios clientes.</p>
+<p>⏸️ PAUSA</p>
+<p>Estamos hablando de un modelo <strong>Business to Business</strong>, B2B. No vendemos suscripciones de fitness al usuario final. Vendemos <strong>webs de gestión de fitness llave en mano</strong> a los gimnasios. Fit-Paisa es nuestra demo, nuestra carta de presentación funcional y desplegada en producción.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 2 — Análisis de mercado (<code>#slide-2</code>)</h2>
+<p>El mercado en el que entramos no es pequeño. El sector del fitness digital superó los <strong>13.000 millones de dólares a nivel global en 2024</strong>, con una tasa de crecimiento anual del 24%. Y no para de crecer.</p>
+<p>⏸️ PAUSA</p>
+<p>¿Por qué? El análisis PEST del proyecto lo confirma. En el factor <strong>social</strong>, después de la pandemia de 2020, cambió de forma permanente la relación de las personas con el ejercicio. En el factor <strong>tecnológico</strong>, la infraestructura serverless es madura y las APIs públicas de datos nutricionales como Open Food Facts ofrecen más de tres millones de productos de forma gratuita. En el factor <strong>económico</strong>, la penetración de internet supera el 78% en España, ampliando constantemente el mercado objetivo.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 3 — Análisis de competencia (<code>#slide-3</code>)</h2>
+<p>Si miramos a los competidores directos, el mapa es muy claro. Tenemos a <strong>MyFitnessPal</strong>, el rey de la nutrición, pero sin entrenador personal integrado. Tenemos a <strong>Freeletics</strong>, fuerte en entrenamiento pero sin gestión nutricional real. Tenemos a <strong>Hevy</strong>, excelente para ejercicios, pero sin nutrición, sin mensajería, sin coaching. Y tenemos a <strong>Trainerize</strong>, que va en la dirección correcta, pero resulta cara y con poca flexibilidad para el cliente B2B.</p>
+<p>⏸️ PAUSA</p>
+<p>🔥 ÉNFASIS FitPaisa ocupa exactamente ese hueco: <strong>integración total de nutrición, entrenamiento, entrenador y mensajería en tiempo real</strong>, con arquitectura personalizable para cada cliente B2B a coste marginal prácticamente nulo.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 8 — Modelo de negocio y marketing (<code>#slide-8</code>)</h2>
+<p><em>(Nota: salta de slide-3 a slide-8. Las slides 4, 5, 6 y 7 se reservan para la Parte 2)</em></p>
+<p>La forma jurídica elegida es la <strong>Sociedad de Responsabilidad Limitada</strong>. La S.L. protege el patrimonio personal del socio, aporta credibilidad ante partners como Stripe o los propios gimnasios, y permite incorporar socios o inversores en el futuro sin cambiar la estructura jurídica.</p>
+<p>⏸️ PAUSA</p>
+<p>La estrategia de marketing es clara: <strong>crecimiento orgánico en foros</strong> como Reddit y comunidades de Instagram. Coste de adquisición: cero. Dos meses de fase beta para pulir el producto. Precio mensual de <strong>14,99€/mes</strong> o <strong>119,90€/año</strong> con descuento para fidelizar y reducir el churn rate.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 9 — Modelo financiero (<code>#slide-9</code>)</h2>
+<p><strong>Financiación y Costes. Aquí viene uno de los argumentos más potentes de este proyecto.</strong></p>
+<p>⏸️ PAUSA</p>
+<p>El coste inicial de desarrollo y despliegue de FitPaisa ha sido, literalmente, <strong>cero euros</strong>.</p>
+<p>👀 MIRAR AL PÚBLICO</p>
+<p>No es un error. Cero euros. Sin servidores de pago. Sin licencias. Sin cuotas mensuales de infraestructura.</p>
+<p>⏸️ PAUSA</p>
+<p>Toda la plataforma funciona sobre los planes gratuitos de las mejores herramientas cloud del mercado. <strong>Vercel</strong> en su plan Hobby con 100 GB de ancho de banda mensual. <strong>Neon PostgreSQL</strong> con 0,5 GB de almacenamiento. <strong>Gmail SMTP</strong> hasta 500 correos diarios. <strong>Cloudinary</strong> con 25 GB de almacenamiento. El dominio es el subdominio gratuito de Vercel.</p>
+<p>⏸️ PAUSA</p>
+<p>Ahora bien, ¿qué ocurre cuando un gimnasio real nos contrata? Para que el cliente tenga su propio dominio —como <code>gimnasioelite.com</code>— necesitamos el <strong>Plan Pro de Vercel</strong>, <strong>20 euros al mes</strong>. La base de datos escala a Neon Scale por <strong>19 dólares al mes</strong>. Cloudinary Plus <strong>89 dólares al mes</strong> para fotografías de progreso. El dominio personalizado, unos <strong>12 euros al año</strong>.</p>
+<p>⏸️ PAUSA</p>
+<p>El coste total de infraestructura para un cliente B2B real: <strong>aproximadamente 130 euros al mes</strong>. Con un margen neto por suscriptor del <strong>96%</strong>, la rentabilidad de este modelo es extraordinaria.</p>
+<p>⏸️ PAUSA</p>
+<p>El único coste variable es la comisión de <strong>Stripe</strong>: 1,4% más 25 céntimos por transacción. Esta comisión se descuenta del cobro al usuario final, por lo que 🔥 ÉNFASIS nunca puede generar un saldo negativo para el negocio.</p>
+<p>⏸️ PAUSA</p>
+<p>El beneficio neto proyectado para el Año 1, empezando con solo 3 clientes en el mes 3 y creciendo orgánicamente hasta 27 suscriptores en el mes 12, es de <strong>2.078,29 euros netos</strong>, sin ninguna inversión inicial.</p>
+<p>⏸️ PAUSA</p>
+<p>Esto concluye la primera parte. Hemos visto qué es Fit-Paisa, su modelo B2B, el mercado en el que compite, y cómo el coste de arranque ha sido absolutamente cero.</p>
+<p>⏸️ PAUSA</p>
+<p>Pasamos ahora a ver cómo se construyó todo esto.</p>
+<h2>---</h2>
+<h1>🔷 PARTE 2: ANÁLISIS, REQUISITOS TÉCNICOS Y ORIGEN</h1>
+<hr />
+<hr />
+<h2>&gt; ## ⏩ SLIDE 4 — Funcionalidades del producto (<code>#slide-4</code>)</h2>
+<p><strong>¿De dónde surge la idea de Fit-Paisa?</strong></p>
+<p>⏸️ PAUSA</p>
+<p>La respuesta honesta es que surgió de la frustración.</p>
+<p>👀 MIRAR AL PÚBLICO</p>
+<p>De la frustración de estar en el gimnasio, con el móvil en una mano, intentando recordar qué ejercicios tocaban hoy, buscando en MyFitnessPal cuántas calorías tiene el batido de proteínas que acabas de tomar, y luego escribiéndole a tu entrenador por WhatsApp para preguntarle si tu técnica es correcta.</p>
+<p>⏸️ PAUSA</p>
+<p>La inspiración técnica llegó al analizar el mercado y detectar que el hueco real no estaba en la nutrición ni en el entrenamiento de forma aislada. El hueco estaba en 🔥 ÉNFASIS <strong>la conexión</strong>: unir al cliente con su entrenador, unir el dato nutricional con el plan de ejercicio, unir el progreso de hoy con el objetivo de mañana.</p>
+<p>⏸️ PAUSA</p>
+<p><strong>Análisis y Requisitos.</strong></p>
+<p>El desarrollo comenzó con la elaboración de la <strong>Especificación de Requisitos Software</strong> siguiendo el estándar internacional IEEE 830. Los requisitos funcionales se organizan en seis módulos clave. Voy a destacar los más relevantes.</p>
+<p><strong>Autenticación</strong>: El registro nunca supera tres pasos. El sistema bloquea una cuenta tras cinco intentos fallidos durante treinta minutos, cumpliendo las directrices NIST SP 800-63B.</p>
+<p><strong>Nutrición</strong>: Búsqueda híbrida con catálogo local por trigramas de PostgreSQL —tolerante a errores tipográficos— y fallback automático a Open Food Facts con más de tres millones de productos.</p>
+<p><strong>Entrenamiento</strong>: Planes estructurados por día de la semana con ciclo de estados: Borrador → Activo → Archivado.</p>
+<p><strong>Progreso</strong>: Registro de peso y medidas con gráfica de evolución y línea de objetivo superpuesta.</p>
+<p><strong>Mensajería</strong>: Polling incremental cada 2,5 segundos. Notificaciones nativas del sistema operativo cuando la pestaña está en segundo plano.</p>
+<p><strong>Suscripciones</strong>: Modelo Freemium con Stripe Checkout Hosted. El backend nunca toca los datos de la tarjeta. Cumplimiento PCI-DSS completo.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 5 — Mockup de la aplicación (<code>#slide-5</code>)</h2>
+<p><em>(Muestra el mockup interactivo mientras explicas los requisitos no funcionales)</em></p>
+<p>Entre los <strong>requisitos no funcionales</strong> clave, destaco tres. Primero, <strong>rendimiento</strong>: dashboard en menos de dos segundos, API en menos de 500 milisegundos. Segundo, <strong>seguridad</strong>: TLS 1.2, bcrypt factor 12, JWT con HMAC-SHA256, y el 100% de las consultas SQL mediante PDO con prepared statements —eliminando completamente el riesgo de inyección SQL—. Las pruebas verificaron resistencia a path traversal, fuerza bruta, manipulación de JWT y acceso directo al backend. Tercero, <strong>disponibilidad</strong>: 99,5% mensual, respaldado por el SLA de Vercel del 99,99%.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 6 — Stack tecnológico (<code>#slide-6</code>)</h2>
+<p><strong>Arquitectura Técnica.</strong></p>
+<p>⏸️ PAUSA</p>
+<p>El stack tecnológico fue elegido con un criterio muy concreto: <strong>máximo rendimiento con mínimo coste</strong>.</p>
+<p>El frontend es HTML5, CSS3 y JavaScript puro. Las animaciones y transiciones de la Single Page Application se realizan con <strong>GSAP 3</strong>, y las gráficas con <strong>Chart.js</strong>. El resultado es una interfaz con diseño glassmorphism que da una experiencia visual de nivel producción.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 7 — Arquitectura del sistema (<code>#slide-7</code>)</h2>
+<p>El backend es <strong>PHP 8.2 en arquitectura serverless</strong>, desplegado en <strong>Vercel</strong>. El elemento más elegante del diseño es el patrón <strong>Front Controller</strong>: un único archivo <code>api/index.php</code> gestiona todas las peticiones. Esto resuelve la restricción del plan gratuito de Vercel de máximo 12 funciones serverless activas, permitiéndonos tener más de 15 endpoints operativos sin coste adicional.</p>
+<p>⏸️ PAUSA</p>
+<p>La base de datos es <strong>PostgreSQL 16</strong> en <strong>Neon</strong>, con 15 tablas relacionales y dos ramas completamente aisladas: producción y testing. El despliegue es <strong>totalmente automatizado</strong>: cualquier push a la rama <code>main</code> de GitHub activa un despliegue en producción en cuestión de segundos.</p>
+<p>⏸️ PAUSA</p>
+<p>🔥 ÉNFASIS Esta arquitectura es la que hace que el modelo B2B sea realmente escalable. Añadir un nuevo gimnasio cliente significa crear un nuevo proyecto en Vercel, conectarlo a una nueva rama en Neon, y personalizar la identidad visual. El tiempo de configuración es horas, no meses.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 10 — Roadmap de desarrollo (<code>#slide-10</code>)</h2>
+<p><strong>Temporalización.</strong></p>
+<p>El proyecto se desarrolló en <strong>ocho fases a lo largo de aproximadamente siete meses</strong>.</p>
+<p>Todo comenzó en <strong>enero de 2026</strong> con la documentación técnica formal: el <strong>ERS</strong> según IEEE 830-1998 y el <strong>DAS</strong> según IEEE 1016. En <strong>febrero y marzo</strong> se elaboraron el HLD y el LLD que definen la arquitectura antes de escribir una sola línea de código funcional.</p>
+<p>⏸️ PAUSA</p>
+<p>A partir de ahí el desarrollo avanzó en capas lógicas: backend de autenticación y nutrición en febrero, módulo de entrenamiento en marzo, mensajería y pagos Stripe en abril. Frontend completo con GSAP entre mayo y junio. Búsqueda difusa con trigramas en junio. Sistema de notificaciones Web API y rediseño GSAP completo en julio.</p>
+<p>⏸️ PAUSA</p>
+<p>En total: <strong>doce versiones</strong> mayores, más de <strong>15 endpoints</strong> REST, <strong>15 tablas relacionales</strong>, <strong>9 casos de uso</strong> formalizados, y el 100% del proyecto diseñado, programado, desplegado y documentado 🔥 ÉNFASIS por una única persona.</p>
+<hr />
+<h2>&gt; ## ⏩ SLIDE 11 — Plan de pruebas (<code>#slide-11</code>)</h2>
+<p><strong>Prevención de Riesgos, RGPD y Ética Profesional.</strong></p>
+<p>Antes de pasar a la demostración, quiero destacar un aspecto fundamental que a menudo se ignora en los proyectos de software: <strong>la responsabilidad</strong>.</p>
+<p>⏸️ PAUSA</p>
+<p>FitPaisa maneja información crítica: peso, medidas corporales, fotografías y hábitos de salud. Para cumplir con el <strong>RGPD</strong>, hemos aplicado la "Privacidad desde el diseño". Las contraseñas se cifran con bcrypt. Los datos están aislados, y el procesamiento de pagos se delega al 100% en la API de Stripe, eximiendo a FitPaisa de la carga legal de almacenar tarjetas de crédito.</p>
+<p>⏸️ PAUSA</p>
+<p>Y más allá de la ley, está la <strong>ética y la responsabilidad social</strong>.</p>
+<p>👀 MIRAR AL PÚBLICO</p>
+<p>Desarrollar tecnología implica el deber de no causar daños colaterales. Por eso, el diseño de FitPaisa evita notificaciones agresivas que pudieran incentivar desórdenes alimenticios o presión extrema por la apariencia física. Y se declara explícitamente que nuestros algoritmos no sustituyen el diagnóstico de un médico colegiado.</p>
+<p>A nivel de riesgos laborales TIC, el desarrollo se gestionó limitando la hiperconectividad, automatizando los despliegues mediante CI/CD para eliminar el estrés de los deploys manuales, y cuidando la ergonomía del puesto de trabajo.</p>
+<h2>---</h2>
+<h1>🔷 TRANSICIÓN A LA PARTE 3 (Demo en vivo)</h1>
+<hr />
+<hr />
+<h2>&gt; ## ⏩ SLIDE 12 — Cierre (<code>#slide-12</code>)</h2>
+<p>Y es exactamente este sistema —seguro, ético, funcional y rentable— el que vamos a ver operar ahora, en vivo, sobre la plataforma real desplegada en producción.</p>
+<p>⏸️ PAUSA</p>
+<p>🔥 ÉNFASIS Os invito a que hagáis las preguntas que queráis durante la demo. Este código está corriendo en internet ahora mismo, y no tenemos nada que esconder.</p>
+<blockquote>
+<p><em>[Abrir el navegador con la URL de la plataforma en producción]</em></p>
+</blockquote>
+<p><strong>"Con todo lo que acabáis de escuchar como contexto, creo que la mejor manera de cerrar esta presentación es simple: os lo muestro. Esto es Fit-Paisa, en producción, funcionando ahora mismo."</strong></p>
+<h2>---</h2>
+<h1>📋 MAPA RÁPIDO DE SLIDES (para consulta rápida)</h1>
+<table>
+<thead>
+<tr>
+<th style="text-align: center;">Slide</th>
+<th>ID</th>
+<th>Label</th>
+<th>Momento del guion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">00</td>
+<td><code>#slide-0</code></td>
+<td>Portada</td>
+<td>Apertura · "Buenos días…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">01</td>
+<td><code>#slide-1</code></td>
+<td>Idea de negocio</td>
+<td>"FitPaisa nació para…" / Modelo B2B</td>
+</tr>
+<tr>
+<td style="text-align: center;">02</td>
+<td><code>#slide-2</code></td>
+<td>Análisis de mercado</td>
+<td>"El mercado en el que entramos…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">03</td>
+<td><code>#slide-3</code></td>
+<td>Análisis de competencia</td>
+<td>"MyFitnessPal, Freeletics…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">04</td>
+<td><code>#slide-4</code></td>
+<td>Funcionalidades</td>
+<td>Inicio Parte 2 · "¿De dónde surge…?"</td>
+</tr>
+<tr>
+<td style="text-align: center;">05</td>
+<td><code>#slide-5</code></td>
+<td>Mockup interactivo</td>
+<td>RNF · Demo mockup integrada</td>
+</tr>
+<tr>
+<td style="text-align: center;">06</td>
+<td><code>#slide-6</code></td>
+<td>Stack tecnológico</td>
+<td>"HTML5, GSAP, Chart.js…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">07</td>
+<td><code>#slide-7</code></td>
+<td>Arquitectura</td>
+<td>"Front Controller, Neon, CI/CD…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">08</td>
+<td><code>#slide-8</code></td>
+<td>Modelo de negocio</td>
+<td>S.L. · Marketing · Precios</td>
+</tr>
+<tr>
+<td style="text-align: center;">09</td>
+<td><code>#slide-9</code></td>
+<td>Modelo financiero</td>
+<td>Tabla costes 0€ → 130€ B2B</td>
+</tr>
+<tr>
+<td style="text-align: center;">10</td>
+<td><code>#slide-10</code></td>
+<td>Roadmap</td>
+<td>"8 fases, 12 versiones…"</td>
+</tr>
+<tr>
+<td style="text-align: center;">11</td>
+<td><code>#slide-11</code></td>
+<td>Plan de pruebas</td>
+<td>RGPD · Seguridad · Ética</td>
+</tr>
+<tr>
+<td style="text-align: center;">12</td>
+<td><code>#slide-12</code></td>
+<td>Cierre</td>
+<td>Transición a demo en vivo</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<p><em>FitPaisa · Guion v3 · Javier Andrés García Vargas · 2026</em></p>
+</div>
+
+<script>
+// ── Progress bar ──────────────────────────────────────────
+const prog = document.getElementById('rdprog');
+document.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+  prog.style.transform = `scaleX(${Math.min(pct,1)})`;
+});
+
+// ── Highlight markers ─────────────────────────────────────
+function replaceInNode(node) {
+  if (node.nodeType === 3) {
+    const txt = node.textContent;
+    if (!/⏸️|⏩|🔥|👀/.test(txt)) return;
+    const span = document.createElement('span');
+    span.innerHTML = txt
+      .replace(/⏸️\s*PAUSA/g,          '<span class="kw-pausa">⏸️ PAUSA</span>')
+      .replace(/⏩\s*(SLIDE\s*\S+[^<
+]*)/g, '<span class="kw-slide">⏩ $1</span>')
+      .replace(/🔥\s*ÉNFASIS/g,         '<span class="kw-enfasis">🔥 ÉNFASIS</span>')
+      .replace(/👀\s*MIRAR AL PÚBLICO/g, '<span class="kw-mirar">👀 MIRAR AL PÚBLICO</span>');
+    node.replaceWith(span);
+  } else if (node.nodeType === 1 && !['SCRIPT','STYLE'].includes(node.tagName)) {
+    [...node.childNodes].forEach(replaceInNode);
+  }
+}
+replaceInNode(document.querySelector('.container'));
+</script>
+</body>
+</html>
